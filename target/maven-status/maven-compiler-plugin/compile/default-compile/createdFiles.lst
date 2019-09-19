@@ -1,0 +1,8 @@
+ee\ut\monto\repository\ExpenseRepository.class
+ee\ut\monto\model\User.class
+ee\ut\monto\repository\CategoryRepository.class
+ee\ut\monto\model\Expense.class
+ee\ut\monto\controller\CategoryController.class
+ee\ut\monto\MontoApplication.class
+ee\ut\monto\model\Category.class
+ee\ut\monto\controller\ExpenseController.class
