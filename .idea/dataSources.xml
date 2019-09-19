@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="PostgreDB" uuid="d9536431-0051-437d-86b4-8eab8bb1ee74">
+    <data-source source="LOCAL" name="Monto Dadabase" uuid="f674a917-653f-4cab-8e1d-218393b13468">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
