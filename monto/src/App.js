@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Category from "./Category";
 import Home from "./Home";
-import Transactions from "./Expenses";
+import Expenses from "./Expenses";
 
 class App extends Component {
   state = {};
@@ -12,7 +12,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact={true} component={Home} />
           <Route path="/categories" exact={true} component={Category} />
-          <Route path="/transactions" exact={true} component={Transactions} />
+          <Route path="/expenses" exact={true} component={Expenses} />
         </Switch>
       </Router>
     );

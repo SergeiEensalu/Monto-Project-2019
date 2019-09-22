@@ -22,17 +22,6 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public CategoryController(CategoryRepository categoryRepository) {
-        super();
-        this.categoryRepository = categoryRepository;
-    }
-    @GetMapping("/addcategory")
-    public Collection<Category> add(@RequestParam(name = "name") String category) {
-        Category newCategory = new Category(category);
-        categoryRepository.save(newCategory);
-        return categoryRepository.findAll();
-    };
-
     @GetMapping("/categories")
     Collection<Category> categories() {
         return categoryRepository.findAll();

@@ -3,7 +3,6 @@ import AppNav from "./AppNav";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
-import Background from "./background.jpg";
 import {
   Table,
   Container,
@@ -19,9 +18,9 @@ import Moment from "react-moment";
 class Expsenses extends Component {
   emptyItem = {
     description: "",
-    transactiondate: new Date(),
-    id: 106,
-    location: "",
+    expensedate: new Date(),
+    id: 104,
+    sum: 0.0,
     category: { id: 1, name: "Travel" }
   };
 
@@ -39,12 +38,13 @@ class Expsenses extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleCategoryChange = this.handleCategoryChange.bind(this);
   }
 
   async handleSubmit(event) {
     const item = this.state.item;
 
-    await fetch(`/api/transactions`, {
+    await fetch(`/api/expenses`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -54,7 +54,15 @@ class Expsenses extends Component {
     });
 
     event.peventDefault();
-    this.props.history.push("/transactions");
+    this.props.history.push("/expenses");
+  }
+
+  handleCategoryChange(event) {
+    const text = event.target.options[event.target.selectedIndex].text;
+    const value = event.target.value;
+    let item = { ...this.state.item };
+    item["category"] = { id: value, name: text };
+    this.setState({ item });
   }
 
   handleChange(event) {
@@ -64,25 +72,29 @@ class Expsenses extends Component {
     let item = { ...this.state.item };
     item[name] = value;
     this.setState({ item });
+    console.log(target);
+    console.log(name);
+    console.log(value);
     console.log(item);
   }
 
   handleDateChange(date) {
     let item = { ...this.state.item };
-    item.transactiondate = date;
+    item.expensedate = date;
     this.setState({ item });
+    console.log(item);
   }
 
   async remove(id) {
-    await fetch(`/api/transactions/${id}`, {
+    await fetch(`/api/expenses/${id}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       }
     }).then(() => {
-      let updatedTransactions = [...this.state.Expsenses].filter(i => i.id !== id);
-      this.setState({ Expsenses: updatedTransactions });
+      let updatedExpenses = [...this.state.Expsenses].filter(i => i.id !== id);
+      this.setState({ Expsenses: updatedExpenses });
     });
   }
 
@@ -91,14 +103,14 @@ class Expsenses extends Component {
     const body = await response.json();
     this.setState({ Categories: body, isLoading: false });
 
-    const responseExp = await fetch("/api/transactions");
+    const responseExp = await fetch("/api/expenses");
     const bodyExp = await responseExp.json();
     this.setState({ Expsenses: bodyExp, isLoading: false });
     console.log(bodyExp);
   }
 
   render() {
-    const title = <h3>Add Transaction</h3>;
+    const title = <h3>Add Expense</h3>;
     const { Categories } = this.state;
     const { Expsenses, isLoading } = this.state;
 
@@ -110,19 +122,19 @@ class Expsenses extends Component {
       </option>
     ));
 
-    let rows = Expsenses.map(transaction => (
-      <tr key={transaction.id}>
-        <td>{transaction.description}</td>
-        <td>{transaction.location}</td>
+    let rows = Expsenses.map(expense => (
+      <tr key={expense.id}>
+        <td>{expense.description}</td>
+        <td>{expense.sum}</td>
         <td>
-          <Moment date={transaction.transactiondate} format="YYYY/MM/DD" />
+          <Moment date={expense.expensedate} format="YYYY/MM/DD" />
         </td>
-        <td>{transaction.category.name}</td>
+        <td>{expense.category.name}</td>
         <td>
           <Button
             size="sm"
             color="danger"
-            onClick={() => this.remove(transaction.id)}
+            onClick={() => this.remove(expense.id)}
           >
             Delete
           </Button>
@@ -131,12 +143,7 @@ class Expsenses extends Component {
     ));
 
     return (
-      <div
-        div
-        style={{
-          backgroundImage: "url(" + Background + ")"
-        }}
-      >
+      <div>
         <AppNav />
         <Container>
           {title}
@@ -155,24 +162,24 @@ class Expsenses extends Component {
 
             <FormGroup>
               <Label for="category">Category</Label>
-              <select onChange={this.handleChange}>{optionList}</select>
+              <select onChange={this.handleCategoryChange}>{optionList}</select>
             </FormGroup>
 
             <FormGroup>
-              <Label for="city">Date</Label>
+              <Label for="date">Date</Label>
               <DatePicker
-                selected={this.state.item.transactiondate}
+                selected={this.state.item.expensedate}
                 onChange={this.handleDateChange}
               />
             </FormGroup>
 
             <div className="row">
               <FormGroup className="col-md-4 mb-3">
-                <Label for="location">Location</Label>
+                <Label for="sum">Sum</Label>
                 <Input
                   type="text"
-                  name="location"
-                  id="location"
+                  name="sum"
+                  id="sum"
                   onChange={this.handleChange}
                 />
               </FormGroup>
@@ -189,12 +196,12 @@ class Expsenses extends Component {
         </Container>
         {""}
         <Container>
-          <h3>Transaction List</h3>
+          <h3>Expense List</h3>
           <Table className="mt-4">
             <thead>
               <tr>
                 <th width="30%">Description</th>
-                <th width="10%">Location</th>
+                <th width="10%">Sum</th>
                 <th> Date</th>
                 <th> Category</th>
                 <th width="10%">Action</th>

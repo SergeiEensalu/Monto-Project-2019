@@ -9,5 +9,4 @@ public class MontoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MontoApplication.class, args);
 	}
-
 }

@@ -1,28 +1,29 @@
 import React, { Component } from "react";
 import AppNav from "./AppNav";
-import Background from "./background.jpg";
 
 class Category extends Component {
-  state = {};
+  state = {
+    isLoading: true,
+    Categories: []
+  };
+
+  async componentDidMount() {
+    const response = await fetch("/api/categories");
+    const body = await response.json();
+    this.setState({ Categories: body, isLoading: false });
+  }
 
   render() {
+    const { Categories, isLoading } = this.state;
+    if (isLoading) return <div>Loading...</div>;
+
     return (
-      <div
-        style={{
-          backgroundImage: "url(" + Background + ")"
-        }}
-      >
+      <div>
         <AppNav />
-        <h2
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh"
-          }}
-        >
-          Needs to be emplemented
-        </h2>
+        <h2>Categories</h2>
+        {Categories.map(category => (
+          <div id={category.id}>{category.name}</div>
+        ))}
       </div>
     );
   }
