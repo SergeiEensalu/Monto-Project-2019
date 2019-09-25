@@ -3,3 +3,5 @@
 node_modules/
 target/
 monto.iml
+
+src/main/resources/application.properties

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AppNav from "./AppNav";
 import Logo from "./logo.png";
 
-class Home extends Component {
+class Dashboard extends Component {
   state = {};
   render() {
     return (
@@ -16,4 +16,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default Dashboard;

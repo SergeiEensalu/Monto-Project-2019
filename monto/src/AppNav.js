@@ -1,28 +1,56 @@
-import React, { Component } from "react";
-import { Nav, NavItem, NavbarBrand, NavLink, Navbar } from "reactstrap";
+import React, {Component} from "react";
+import {Nav, Navbar, NavbarBrand, NavItem, NavLink} from "reactstrap";
+import AuthenticationService from "./AuthenticationService";
 
 class AppNav extends Component {
-  state = {};
-  render() {
-    return (
-      <div>
-        <Navbar color="dark" dark expand="md">
-          <NavbarBrand href="/">Personal finance manager Monto</NavbarBrand>
-          <Nav className="ml-auto" navbar>
-            <NavItem>
-              <NavLink href="/">Home</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/categories">Incomes</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/expenses">Expenses</NavLink>
-            </NavItem>
-          </Nav>
-        </Navbar>
-      </div>
-    );
-  }
+    state = {};
+
+
+    render() {
+        if (AuthenticationService.isUserLoggedIn()) {
+            return (
+                <div>
+                    <Navbar color="dark" dark expand="md">
+                        <NavbarBrand href="/">Personal finance manager Monto</NavbarBrand>
+                        <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/dashboard">Dashboards</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/categories">Incomes</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/expenses">Expenses</NavLink>
+                            </NavItem>
+                            <NavItem><NavLink href="/" onClick={() => {
+                                AuthenticationService.logout();
+                            }}>Logout</NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Navbar>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <Navbar color="dark" dark expand="md">
+                        <NavbarBrand href="/">Personal finance manager Monto</NavbarBrand>
+                        <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/">Home</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/login">Login</NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Navbar>
+                </div>
+            );
+
+        }
+
+
+    }
 }
 
 export default AppNav;
