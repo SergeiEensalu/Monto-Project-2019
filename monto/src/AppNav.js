@@ -17,7 +17,7 @@ class AppNav extends Component {
                                 <NavLink href="/dashboard">Dashboards</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="/categories">Incomes</NavLink>
+                                <NavLink href="/incomes">Incomes</NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink href="/expenses">Expenses</NavLink>
