@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AppNav from "./AppNav";
-import Logo from "./logo.png";
+import Logo from "../pictures/logo.png";
 
 class Dashboard extends Component {
   state = {};

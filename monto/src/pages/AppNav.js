@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Nav, Navbar, NavbarBrand, NavItem, NavLink} from "reactstrap";
-import AuthenticationService from "./AuthenticationService";
+import AuthenticationService from "../authentication/AuthenticationService";
+import "../index.css";
 
 class AppNav extends Component {
     state = {};

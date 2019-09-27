@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AppNav from "./AppNav";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./App.css";
+import "../App.css";
 import {Button, Container, Form, FormGroup, Input, Label, Table} from "reactstrap";
 import {Link} from "react-router-dom";
 import Moment from "react-moment";
