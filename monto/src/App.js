@@ -9,6 +9,8 @@ import MainPage from "./pages/MainPage";
 import Dashboard from "./pages/Dashboard";
 import LoginProtected from "./authentication/Loginprotect";
 import FileUploader from "./fileUploading/FileUploader";
+import Categories from "./pages/Categories";
+import Accounts from "./pages/Accounts";
 
 class App extends Component {
   state = {};
@@ -31,6 +33,8 @@ class App extends Component {
           />
           <ProtectedRoute path="/incomes" exact={true} component={Incomes} />
           <ProtectedRoute path="/expenses" exact={true} component={Expenses} />
+          <ProtectedRoute path="/categories" exact={true} component={Categories} />
+          <ProtectedRoute path="/accounts" exact={true} component={Accounts} />
           <Route path="/fileUploader" exact={true} component={FileUploader} />
           <Route path="*" component={() => "404 NOT FOUND"} />
         </Switch>

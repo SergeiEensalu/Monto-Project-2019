@@ -26,6 +26,12 @@ class AppNav extends Component {
                 <NavLink href="/fileUploader">Upload file</NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/categories">Categories</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/accounts">Accounts</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink
                   href="/"
                   onClick={() => {

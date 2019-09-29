@@ -26,26 +26,26 @@ public class CategoryController {
         return categoryRepository.findAll();
     }
 
-    @GetMapping("/category/{id}")
+    @GetMapping("/categories/{id}")
     ResponseEntity<?> getCategory(@PathVariable Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         return category.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/category")
+    @PostMapping("/categories")
     ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         Category savedCategory = categoryRepository.save(category);
-        return ResponseEntity.created(new URI("/api/category" + savedCategory.getId())).body(savedCategory);
+        return ResponseEntity.created(new URI("/api/categories" + savedCategory.getId())).body(savedCategory);
     }
 
-    @PutMapping("/category/{id}")
+    @PutMapping("/categories/{id}")
     ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) {
         Category updatedCategory = categoryRepository.save(category);
         return ResponseEntity.ok().body(updatedCategory);
     }
 
-    @DeleteMapping("/category/{id}")
+    @DeleteMapping("/categories/{id}")
     ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryRepository.deleteById(id);
         return ResponseEntity.ok().build();

@@ -18,7 +18,7 @@ public class Account {
     private String name;
     private String type; // personal or business? might need changing
 
-    @ManyToOne
-    @JsonIgnore
-    private Users user;
+//    @ManyToOne
+//    @JsonIgnore
+//    private Users user;
 }
