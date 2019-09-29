@@ -55,7 +55,10 @@ class AppNav extends Component {
                 <NavLink href="/">Home</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/login">Login</NavLink>
+                <NavLink href="/login">Log In</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/register">Sign Up</NavLink>
               </NavItem>
             </Nav>
           </Navbar>

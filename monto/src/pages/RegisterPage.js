@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "../index.css";
-import AppNav from "./AppNav";
+import AppNav from "../AppNav";
 import {Button, Container, FormGroup} from "reactstrap";
 import swal from "sweetalert";
 

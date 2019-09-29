@@ -92,8 +92,9 @@ class Accounts extends Component {
 
         return (
             <div>
+                <AppNav />
                 <Container>
-                    <AppNav />
+
                     <h2>Accounts</h2>
                     <Form onSubmit={this.handleSubmit}>
                         <FormGroup>

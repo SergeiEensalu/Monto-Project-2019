@@ -21,16 +21,8 @@ class App extends Component {
         <Switch>
           <Route path="/" exact={true} component={MainPage} />
           <LoginProtected path="/login" exact={true} component={LoginPage} />
-          <LoginProtected
-            path="/register"
-            exact={true}
-            component={RegisterPage}
-          />
-          <ProtectedRoute
-            path="/dashboard"
-            exact={true}
-            component={Dashboard}
-          />
+          <LoginProtected path="/register" exact={true} component={RegisterPage}/>
+          <ProtectedRoute path="/dashboard" exact={true} component={Dashboard}/>
           <ProtectedRoute path="/incomes" exact={true} component={Incomes} />
           <ProtectedRoute path="/expenses" exact={true} component={Expenses} />
           <ProtectedRoute path="/categories" exact={true} component={Categories} />
