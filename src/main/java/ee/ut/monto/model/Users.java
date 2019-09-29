@@ -1,8 +1,9 @@
 package ee.ut.monto.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 
@@ -15,13 +16,16 @@ public class Users {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    private String firstName;
+    @NonNull
+    private String username;
 
-    private String lastName;
-
-    private String email;
-
+    @NonNull
     private String password;
 
-    private String description;
+    @NonNull
+    private String firstname;
+
+    @NonNull
+    private String lastname;
+
 }
