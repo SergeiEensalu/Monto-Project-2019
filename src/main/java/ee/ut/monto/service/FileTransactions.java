@@ -12,8 +12,12 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 public class FileTransactions {
@@ -36,12 +40,13 @@ public class FileTransactions {
             String description = "";
             Double sum = 0.0;
 
+            int lastRowIndex = sheet.getLastRowNum();
             Iterator rows = sheet.rowIterator();
 
             while (rows.hasNext()) {
                 row = (HSSFRow) rows.next();
                 if (row.getRowNum() == 0 || row.getRowNum() == 1 || row.getRowNum() == 2 || row.getRowNum() == 3
-                        || row.getRowNum() == 4) continue;
+                        || row.getRowNum() == 4 || row.getRowNum() > lastRowIndex - 2) continue;
                 Iterator cells = row.cellIterator();
 
                 while (cells.hasNext()) {
@@ -61,15 +66,46 @@ public class FileTransactions {
                             break;
                         default:
                             break;
-
                     }
                 }
                 saveTransaction(date, categoryName, description, sum);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveCSVFileTransactions(MultipartFile multipartFile) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(multipartFile.getInputStream()));
+            bufferedReader.readLine();
+            bufferedReader.readLine();
+
+            Date date = null;
+            String categoryName = "";
+            String description = "";
+            Double sum = 0.0;
+
+            String row;
+
+            while ((row = bufferedReader.readLine()) != null) {
+                String[] data = row.split(";");
+                if (!data[3].equals("\"\"\"\"")) {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(data[2].replace("\"","").replace(".", "/"));
+                    categoryName = data[3].replace("\"","");
+                    description = data[4].replace("\"","");
+                    sum = Double.parseDouble(data[5].replace("\"","").replace(",","."));
+                    saveTransaction(date, categoryName, description, -sum);
+                }
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

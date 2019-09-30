@@ -25,9 +25,10 @@ public class FileController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity handleFileUpload(@RequestParam("file") MultipartFile multipartFile) {
-        switch (multipartFile.getContentType()) {
-            case "application/vnd.ms-excel":
+        if (multipartFile.getOriginalFilename().endsWith(".xls"))
                 fileTransactions.saveXLSFileTransactions(multipartFile);
+        else {
+            fileTransactions.saveCSVFileTransactions(multipartFile);
         }
         return ResponseEntity.ok().build();
     }
