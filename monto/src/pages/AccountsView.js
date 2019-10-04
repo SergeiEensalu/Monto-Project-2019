@@ -3,7 +3,7 @@ import AppNav from "../AppNav";
 import {Button, Container, Form, FormGroup, Input, Label, Table} from "reactstrap";
 import {Link} from "react-router-dom";
 
-class Accounts extends Component {
+class AccountsView extends Component {
     emptyItem = {
         id: 105,
         name: "",
@@ -121,7 +121,7 @@ class Accounts extends Component {
                             <Button color="primary" type="submit">
                                 Save
                             </Button>{" "}
-                            <Button color="secondary" tag={Link} to="/">
+                            <Button color="secondary" onClick={this.props.editAccounts}>
                                 Cancel
                             </Button>
                         </FormGroup>
@@ -145,4 +145,4 @@ class Accounts extends Component {
     }
 }
 
-export default Accounts;
+export default AccountsView;

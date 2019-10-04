@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import AppNav from "../AppNav";
+import React, { Component } from 'react';
 import {Button, Container, Form, FormGroup, Input, Label, Table} from "reactstrap";
+import AppNav from "../AppNav";
 import {Link} from "react-router-dom";
 
-class Categories extends Component {
+class CategoriesView extends Component {
   emptyItem = {
     id: 105,
     name: ""
@@ -56,7 +56,7 @@ class Categories extends Component {
     });
 
     event.peventDefault();
-    this.props.history.push("/categories");
+    this.props.history.push("/expenses");
   }
 
   handleChange(event) {
@@ -67,6 +67,7 @@ class Categories extends Component {
     item[name] = value;
     this.setState({item});
   }
+
 
   render() {
     const { Categories, isLoading } = this.state;
@@ -108,7 +109,7 @@ class Categories extends Component {
                 <Button color="primary" type="submit">
                   Save
                 </Button>{" "}
-                <Button color="secondary" tag={Link} to="/">
+                <Button color="secondary" onClick={this.props.editCategories}>
                   Cancel
                 </Button>
               </FormGroup>
@@ -131,4 +132,4 @@ class Categories extends Component {
   }
 }
 
-export default Categories;
+export default CategoriesView;

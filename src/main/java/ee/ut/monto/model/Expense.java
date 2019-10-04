@@ -20,7 +20,7 @@ public class Expense {
     private Double sum;
     @ManyToOne
     private Category category;
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne
     private Account account;
 }
