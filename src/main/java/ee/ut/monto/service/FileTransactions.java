@@ -1,17 +1,16 @@
 package ee.ut.monto.service;
 
 import ee.ut.monto.model.Category;
-import ee.ut.monto.model.Expense;
-import ee.ut.monto.model.Income;
+import ee.ut.monto.model.Transaction;
 import ee.ut.monto.repository.CategoryRepository;
-import ee.ut.monto.repository.ExpenseRepository;
-import ee.ut.monto.repository.IncomeRepository;
+import ee.ut.monto.repository.TransactionRepository;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,11 +19,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+
 public class FileTransactions {
     @Autowired
-    private ExpenseRepository expenseRepository;
-    @Autowired
-    private IncomeRepository incomeRepository;
+    private TransactionRepository transactionRepository;
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -93,10 +91,10 @@ public class FileTransactions {
             while ((row = bufferedReader.readLine()) != null) {
                 String[] data = row.split(";");
                 if (!data[3].equals("\"\"\"\"")) {
-                    date = new SimpleDateFormat("dd/MM/yyyy").parse(data[2].replace("\"","").replace(".", "/"));
-                    categoryName = data[3].replace("\"","");
-                    description = data[4].replace("\"","");
-                    sum = Double.parseDouble(data[5].replace("\"","").replace(",","."));
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(data[2].replace("\"", "").replace(".", "/"));
+                    categoryName = data[3].replace("\"", "");
+                    description = data[4].replace("\"", "");
+                    sum = Double.parseDouble(data[5].replace("\"", "").replace(",", "."));
                     saveTransaction(date, categoryName, description, -sum);
                 }
             }
@@ -113,21 +111,15 @@ public class FileTransactions {
     private void saveTransaction(Date date, String categoryName, String description, Double sum) {
         Category category = new Category();
         category.setName(categoryName);
+
         categoryRepository.save(category);
-        if (sum < 0) {
-            Expense expense = new Expense();
-            expense.setExpensedate(date.toInstant());
-            expense.setCategory(category);
-            expense.setDescription(description);
-            expense.setSum(sum);
-            expenseRepository.save(expense);
-        } else {
-            Income income = new Income();
-            income.setIncomeDate(date.toInstant());
-            income.setCategory(category);
-            income.setDescription(description);
-            income.setSum(sum);
-            incomeRepository.save(income);
-        }
+
+        Transaction transaction = new Transaction();
+        transaction.setDate(date.toInstant());
+        transaction.setCategory(category);
+        transaction.setDescription(description);
+        transaction.setSum(sum);
+
+        transactionRepository.save(transaction);
     }
 }

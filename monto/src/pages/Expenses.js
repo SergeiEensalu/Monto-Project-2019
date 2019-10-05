@@ -20,11 +20,11 @@ import Moment from "react-moment";
 class Expenses extends Component {
     emptyItem = {
         description: "",
-        expensedate: new Date(),
+        date: new Date(),
         id: 104,
         sum: 0.0,
-        category: { id: 1, name: "Travel" },
-        account: {id: 1, name: "Swed", type: "b"}
+        category: undefined,
+        account: undefined
     };
 
     constructor(props) {
@@ -61,19 +61,20 @@ class Expenses extends Component {
     }
 
     async handleSubmit(event) {
+        event.preventDefault();
+
         const item = this.state.item;
 
-        await fetch(`/api/expenses`, {
+        const response = await fetch(`/api/transactions`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(item)
+            body: JSON.stringify({...item, sum: -item.sum})
         });
 
-        event.peventDefault();
-        this.props.history.push("/expenses");
+        this.setState({...this.state, Expenses: [...this.state.Expenses, await response.json()]});
     }
 
     handleCategoryChange(event) {
@@ -109,14 +110,13 @@ class Expenses extends Component {
     }
 
     handleDateChange(date) {
-        let item = { ...this.state.item };
-        item.expensedate = date;
+        let item = { ...this.state.item, date };
         this.setState({ item });
         console.log(item);
     }
 
     async remove(id) {
-        await fetch(`/api/expenses/${id}`, {
+        await fetch(`/api/transactions/${id}`, {
             method: "DELETE",
             headers: {
                 Accept: "application/json",
@@ -137,7 +137,7 @@ class Expenses extends Component {
         const bodyAcc = await responseAcc.json();
         this.setState({ Accounts: bodyAcc, isLoading: false });
 
-        const responseExp = await fetch("/api/expenses");
+        const responseExp = await fetch("/api/transactions/expenses");
         const bodyExp = await responseExp.json();
         this.setState({ Expenses: bodyExp, isLoading: false });
         console.log(bodyExp);
@@ -174,9 +174,9 @@ class Expenses extends Component {
         let rows = Expenses.map(expense => (
             <tr key={expense.id}>
                 <td>{expense.description}</td>
-                <td>{expense.sum}</td>
+                <td>{-expense.sum}</td>
                 <td>
-                    <Moment date={expense.expensedate} format="YYYY/MM/DD" />
+                    <Moment date={expense.date} format="YYYY/MM/DD" />
                 </td>
                 <td>{expense.category.name}</td>
                 <td>{expense.account.name}</td>
@@ -212,7 +212,10 @@ class Expenses extends Component {
 
                         <FormGroup>
                             <Label for="category">Category</Label>
-                            <select onChange={this.handleCategoryChange}>{optionList}</select>
+                            <select onChange={this.handleCategoryChange}>
+                                <option disabled selected value>Select a category</option>
+                                {optionList}
+                            </select>
                             <Button size="sm" color="danger" onClick={() => this.editCategories()}>
                             {/*<Button size="sm" color="danger" tag={Link} to="/categories">*/}
                                 Edit
@@ -221,7 +224,10 @@ class Expenses extends Component {
 
                         <FormGroup>
                             <Label for="account">Account</Label>
-                            <select onChange={this.handleAccountChange}>{accountList}</select>
+                            <select onChange={this.handleAccountChange} defaultValue={""}>
+                                <option disabled selected value>Select an account</option>
+                                {accountList}
+                            </select>
                             <Button size="sm" color="danger" onClick={() => this.editAccounts()}>
                             {/*<Button size="sm" color="danger" tag={Link} to="/accounts">*/}
                                 Edit
@@ -231,7 +237,7 @@ class Expenses extends Component {
                         <FormGroup>
                             <Label for="date">Date</Label>
                             <DatePicker
-                                selected={this.state.item.expensedate}
+                                selected={this.state.item.date}
                                 onChange={this.handleDateChange}
                             />
                         </FormGroup>
@@ -257,7 +263,6 @@ class Expenses extends Component {
                         </FormGroup>
                     </Form>
                 </Container>
-                {""}
                 <Container>
                     <h3>Expense List</h3>
                     <Table className="mt-4">

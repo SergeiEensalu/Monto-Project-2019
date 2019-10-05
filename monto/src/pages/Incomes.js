@@ -18,7 +18,7 @@ import Moment from "react-moment";
 class Incomes extends Component {
   emptyItem = {
     description: "",
-    incomeDate: new Date(),
+    date: new Date(),
     id: 104,
     sum: 0.0,
     category: { id: 1, name: "Travel" }
@@ -42,9 +42,11 @@ class Incomes extends Component {
   }
 
   async handleSubmit(event) {
+    event.preventDefault();
+
     const item = this.state.item;
 
-    await fetch(`/api/incomes`, {
+    const response = await fetch(`/api/transactions`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -52,8 +54,8 @@ class Incomes extends Component {
       },
       body: JSON.stringify(item)
     });
-    event.preventDefault();
-    this.props.history.push("/incomes");
+
+    this.setState({...this.state, Incomes: [...this.state.Incomes, await response.json()]});
   }
 
   handleCategoryChange(event) {
@@ -74,13 +76,12 @@ class Incomes extends Component {
   }
 
   handleDateChange(date) {
-    let item = { ...this.state.item };
-    item.incomeDate = date;
+    let item = { ...this.state.item, date };
     this.setState({ item });
   }
 
   async remove(id) {
-    await fetch(`/api/incomes/${id}`, {
+    await fetch(`/api/transactions/${id}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -97,7 +98,7 @@ class Incomes extends Component {
     const body = await response.json();
     this.setState({ Categories: body, isLoading: false });
 
-    const responseExp = await fetch("/api/incomes");
+    const responseExp = await fetch("/api/transactions/incomes");
     const bodyExp = await responseExp.json();
     this.setState({ Incomes: bodyExp, isLoading: false });
   }
@@ -120,7 +121,7 @@ class Incomes extends Component {
         <td>{income.description}</td>
         <td>{income.sum}</td>
         <td>
-          <Moment date={income.incomeDate} format="YYYY/MM/DD" />
+          <Moment date={income.date} format="YYYY/MM/DD" />
         </td>
         <td>{income.category.name}</td>
         <td>
@@ -161,7 +162,7 @@ class Incomes extends Component {
             <FormGroup>
               <Label for="date">Date</Label>
               <DatePicker
-                selected={this.state.item.incomeDate}
+                selected={this.state.item.date}
                 onChange={this.handleDateChange}
               />
             </FormGroup>

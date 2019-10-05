@@ -1,25 +1,29 @@
 package ee.ut.monto.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
 @NoArgsConstructor
 @Data
-@Table(name = "income")
-public class Income {
+@Table(name = "transaction")
+public final class Transaction {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Instant incomeDate;
+
+    private Instant date;
+
     private String description;
+
     private Double sum;
+
     @ManyToOne
     private Category category;
-    @JsonIgnore
+
     @ManyToOne
     private Account account;
 }
