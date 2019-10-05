@@ -178,8 +178,8 @@ class Expenses extends Component {
                 <td>
                     <Moment date={expense.date} format="YYYY/MM/DD" />
                 </td>
-                <td>{expense.category.name}</td>
-                <td>{expense.account.name}</td>
+                <td>{expense.category ? expense.category.name : "No category"}</td>
+                <td>{expense.account ? expense.account.name : "No account"}</td>
                 <td>
                     <Button
                         size="sm"
@@ -213,7 +213,7 @@ class Expenses extends Component {
                         <FormGroup>
                             <Label for="category">Category</Label>
                             <select onChange={this.handleCategoryChange}>
-                                <option disabled selected value>Select a category</option>
+                                <option selected value={-1}>No category</option>
                                 {optionList}
                             </select>
                             <Button size="sm" color="danger" onClick={() => this.editCategories()}>
@@ -225,7 +225,7 @@ class Expenses extends Component {
                         <FormGroup>
                             <Label for="account">Account</Label>
                             <select onChange={this.handleAccountChange} defaultValue={""}>
-                                <option disabled selected value>Select an account</option>
+                                <option selected value={-1}>No account</option>
                                 {accountList}
                             </select>
                             <Button size="sm" color="danger" onClick={() => this.editAccounts()}>
