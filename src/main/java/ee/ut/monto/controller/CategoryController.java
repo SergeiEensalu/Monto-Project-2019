@@ -2,13 +2,16 @@ package ee.ut.monto.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 
 import ee.ut.monto.model.Category;
+import ee.ut.monto.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import ee.ut.monto.repository.CategoryRepository;

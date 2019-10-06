@@ -1,19 +1,15 @@
-import React, { Component } from "react";
-import { Redirect, Route } from "react-router-dom";
-import AuthenticationService from "./AuthenticationService";
+import React, {Component} from "react";
+import {Redirect, Route} from "react-router-dom";
+import {inject, observer} from "mobx-react";
 
-class ProtectedRoute extends Component {
-  render() {
-    console.log(
-      "is user Authentication",
-      AuthenticationService.isUserLoggedIn()
-    );
-    if (AuthenticationService.isUserLoggedIn()) {
-      return <Route {...this.props} />;
-    } else {
-      return <Redirect to="/login" />;
+export default inject("auth")(observer(
+  class ProtectedRoute extends Component {
+    render() {
+      if (this.props.auth.authenticated) {
+        return <Route {...this.props} />;
+      } else {
+        return <Redirect to="/login"/>;
+      }
     }
   }
-}
-
-export default ProtectedRoute;
+))

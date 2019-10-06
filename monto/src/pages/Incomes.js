@@ -3,17 +3,10 @@ import AppNav from "../AppNav";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../App.css";
-import {
-  Table,
-  Container,
-  Input,
-  Button,
-  Label,
-  FormGroup,
-  Form
-} from "reactstrap";
+import { Button, Container, Form, FormGroup, Input, Label, Table } from "reactstrap";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
+import { Client } from "../util/client";
 
 class Incomes extends Component {
   emptyItem = {
@@ -21,7 +14,7 @@ class Incomes extends Component {
     date: new Date(),
     id: 104,
     sum: 0.0,
-    category: { id: 1, name: "Travel" }
+    category: undefined
   };
 
   constructor(props) {
@@ -44,69 +37,52 @@ class Incomes extends Component {
   async handleSubmit(event) {
     event.preventDefault();
 
-    const item = this.state.item;
-
-    const response = await fetch(`/api/transactions`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(item)
-    });
-
-    this.setState({...this.state, Incomes: [...this.state.Incomes, await response.json()]});
+    const {json} = await Client.post("/api/transactions", this.state.item);
+    this.setState({...this.state, Incomes: [...this.state.Incomes, json]});
   }
 
   handleCategoryChange(event) {
     const text = event.target.options[event.target.selectedIndex].text;
     const value = event.target.value;
-    let item = { ...this.state.item };
-    item["category"] = { id: value, name: text };
-    this.setState({ item });
+    let item = {...this.state.item};
+    item["category"] = {id: value, name: text};
+    this.setState({item});
   }
 
   handleChange(event) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let item = { ...this.state.item };
+    let item = {...this.state.item};
     item[name] = value;
-    this.setState({ item });
+    this.setState({item});
   }
 
   handleDateChange(date) {
-    let item = { ...this.state.item, date };
-    this.setState({ item });
+    let item = {...this.state.item, date};
+    this.setState({item});
   }
 
   async remove(id) {
-    await fetch(`/api/transactions/${id}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
-      let updatedIncomes = [...this.state.Incomes].filter(i => i.id !== id);
-      this.setState({ Incomes: updatedIncomes });
-    });
+    await Client.delete(`/api/transactions/${id}`);
+
+    let updatedIncomes = [...this.state.Incomes].filter(i => i.id !== id);
+    this.setState({Incomes: updatedIncomes});
   }
 
   async componentDidMount() {
-    const response = await fetch("/api/categories");
-    const body = await response.json();
-    this.setState({ Categories: body, isLoading: false });
+    const {json: Categories} = await Client.get("/api/categories");
+    const {json: Incomes} = await Client.get("/api/transactions/incomes");
 
-    const responseExp = await fetch("/api/transactions/incomes");
-    const bodyExp = await responseExp.json();
-    this.setState({ Incomes: bodyExp, isLoading: false });
+    console.log(Incomes);
+
+    this.setState({Categories, Incomes, isLoading: false});
   }
 
   render() {
     const title = <h3>Add Income</h3>;
-    const { Categories } = this.state;
-    const { Incomes, isLoading } = this.state;
+    const {Categories} = this.state;
+    const {Incomes, isLoading} = this.state;
 
     if (isLoading) return <div>Loading....</div>;
 
@@ -121,9 +97,9 @@ class Incomes extends Component {
         <td>{income.description}</td>
         <td>{income.sum}</td>
         <td>
-          <Moment date={income.date} format="YYYY/MM/DD" />
+          <Moment date={income.date} format="YYYY/MM/DD"/>
         </td>
-        <td>{income.category.name}</td>
+        <td>{income.category ? income.category.name : "No category"}</td>
         <td>
           <Button
             size="sm"
@@ -138,7 +114,7 @@ class Incomes extends Component {
 
     return (
       <div>
-        <AppNav />
+        <AppNav/>
         <Container>
           {title}
 
@@ -193,13 +169,13 @@ class Incomes extends Component {
           <h3>Income List</h3>
           <Table className="mt-4">
             <thead>
-              <tr>
-                <th width="30%">Description</th>
-                <th width="10%">Sum</th>
-                <th> Date</th>
-                <th> Category</th>
-                <th width="10%">Action</th>
-              </tr>
+            <tr>
+              <th width="30%">Description</th>
+              <th width="10%">Sum</th>
+              <th> Date</th>
+              <th> Category</th>
+              <th width="10%">Action</th>
+            </tr>
             </thead>
             <tbody>{rows}</tbody>
           </Table>

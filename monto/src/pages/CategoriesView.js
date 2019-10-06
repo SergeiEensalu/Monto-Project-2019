@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {Button, Container, Form, FormGroup, Input, Label, Table} from "reactstrap";
+import { Button, Container, Form, FormGroup, Input, Label, Table } from "reactstrap";
 import AppNav from "../AppNav";
-import {Link} from "react-router-dom";
+import { Client } from "../util/client";
 
 class CategoriesView extends Component {
   emptyItem = {
@@ -23,40 +23,21 @@ class CategoriesView extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch("/api/categories");
-    const body = await response.json();
-    this.setState({ Categories: body, isLoading: false });
+    const {json} = await Client.get("/api/categories");
+    this.setState({Categories: json, isLoading: false});
   }
 
   async remove(id) {
-    await fetch(`/api/categories/${id}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
-      let updatedCategories = [...this.state.Categories].filter(i => i.id !== id);
-      this.setState({Categories: updatedCategories});
-    });
+    await Client.delete(`/api/categories/${id}`);
+
+    let updatedCategories = [...this.state.Categories].filter(i => i.id !== id);
+    this.setState({Categories: updatedCategories});
   }
 
   async handleSubmit(event) {
-    const item = this.state.item;
-
-    console.log(item);
-
-    await fetch(`/api/categories`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(item)
-    });
-
-    event.peventDefault();
-    this.props.history.push("/expenses");
+    event.preventDefault();
+    await Client.post("/api/categories", this.state.item);
+    window.location.reload();
   }
 
   handleChange(event) {
@@ -70,64 +51,64 @@ class CategoriesView extends Component {
 
 
   render() {
-    const { Categories, isLoading } = this.state;
+    const {Categories, isLoading} = this.state;
     if (isLoading) return <div>Loading...</div>;
 
     let rows = Categories.map(category => (
 
-        <tr key={category.id}>
-          <td>{category.name}</td>
-          <td>
-            <Button
-                size="sm"
-                color="danger"
-                onClick={() => this.remove(category.id)}
-            >
-              Delete
-            </Button>
-          </td>
-        </tr>
+      <tr key={category.id}>
+        <td>{category.name}</td>
+        <td>
+          <Button
+            size="sm"
+            color="danger"
+            onClick={() => this.remove(category.id)}
+          >
+            Delete
+          </Button>
+        </td>
+      </tr>
     ));
 
     return (
-        <div>
-          <AppNav />
-          <Container>
-            <h2>Categories</h2>
-            <Form onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Label for="name">Title</Label>
-                <Input
-                    type="text"
-                    name="name"
-                    id="name"
-                    onChange={this.handleChange}
-                />
-              </FormGroup>
+      <div>
+        <AppNav/>
+        <Container>
+          <h2>Categories</h2>
+          <Form onSubmit={this.handleSubmit}>
+            <FormGroup>
+              <Label for="name">Title</Label>
+              <Input
+                type="text"
+                name="name"
+                id="name"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
 
-              <FormGroup>
-                <Button color="primary" type="submit">
-                  Save
-                </Button>{" "}
-                <Button color="secondary" onClick={this.props.editCategories}>
-                  Cancel
-                </Button>
-              </FormGroup>
-            </Form>
-          </Container>
-          <Container>
-            <h3>Category List</h3>
-            <Table className="mt-4">
-              <thead>
-              <tr>
-                <th> Category</th>
-                <th width="10%">Action</th>
-              </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </Table>
-          </Container>
-        </div>
+            <FormGroup>
+              <Button color="primary" type="submit">
+                Save
+              </Button>{" "}
+              <Button color="secondary" onClick={this.props.editCategories}>
+                Cancel
+              </Button>
+            </FormGroup>
+          </Form>
+        </Container>
+        <Container>
+          <h3>Category List</h3>
+          <Table className="mt-4">
+            <thead>
+            <tr>
+              <th> Category</th>
+              <th width="10%">Action</th>
+            </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </Container>
+      </div>
     );
   }
 }

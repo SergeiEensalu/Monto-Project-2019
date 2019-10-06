@@ -7,7 +7,7 @@ import Incomes from "./pages/Incomes";
 import Expenses from "./pages/Expenses";
 import MainPage from "./pages/MainPage";
 import Dashboard from "./pages/Dashboard";
-import LoginProtected from "./authentication/Loginprotect";
+import LoginProtected from "./authentication/LoginProtected";
 import FileUploader from "./fileUploading/FileUploader";
 import CategoriesView from "./pages/CategoriesView";
 import AccountsView from "./pages/AccountsView";
