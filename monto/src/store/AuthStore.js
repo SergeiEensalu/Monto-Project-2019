@@ -1,6 +1,5 @@
-import {action, computed, decorate, observable, reaction} from "mobx";
-import {Client} from "../util/client";
-
+import { action, computed, decorate, observable, reaction } from "mobx";
+import { Client } from "../util/client";
 
 const TOKEN = "authenticationToken";
 
@@ -16,7 +15,7 @@ export class AuthStore {
       } else {
         sessionStorage.setItem(TOKEN, this.token);
       }
-    })
+    });
   }
 
   get authenticated() {

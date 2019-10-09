@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Container, FormGroup} from "reactstrap";
-import "../index.css";
+import "./LoginPage.css";
 import AppNav from "../AppNav";
 import {inject} from "mobx-react";
 

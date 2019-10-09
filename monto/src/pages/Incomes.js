@@ -132,7 +132,7 @@ class Incomes extends Component {
 
             <FormGroup>
               <Label for="category">Category</Label>
-              <select onChange={this.handleCategoryChange}>{optionList}</select>
+              <select className="form-control" onChange={this.handleCategoryChange}>{optionList}</select>
             </FormGroup>
 
             <FormGroup>

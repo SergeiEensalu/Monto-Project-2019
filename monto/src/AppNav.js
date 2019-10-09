@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Nav, Navbar, NavbarBrand, NavItem, NavLink} from "reactstrap";
-import "./index.css";
+import "./pages/LoginPage.css";
 import {inject, observer} from "mobx-react";
 
 export default inject("auth")(observer(
@@ -18,10 +18,7 @@ export default inject("auth")(observer(
                   <NavLink href="/dashboard">Dashboard</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/incomes">Incomes</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/expenses">Expenses</NavLink>
+                  <NavLink href="/transactions">Transactions</NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink href="/fileUploader">Upload file</NavLink>

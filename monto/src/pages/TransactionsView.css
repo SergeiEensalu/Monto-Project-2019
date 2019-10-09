@@ -1,0 +1,40 @@
+.button-icon {
+    appearance: none;
+    min-width: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+    font-family: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+
+    width: 50px;
+    height: 50px;
+
+    background-color: #a00000;
+    border-radius: 50%;
+    font-size: 32px;
+    color: white;
+    font-feature-settings: "case";
+}
+
+.button-icon:focus {
+    outline: none;
+    background-color: #c00000;
+    transition: 0.25s;
+}
+
+.select-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.select-row > div { /** Suurenda DatePicker'i laiust */
+    width: 100%;
+}
+
+.select-row > button {
+    margin-left: 8px;
+}

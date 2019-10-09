@@ -41,6 +41,6 @@ public final class TransactionController {
     @PostMapping("/transactions")
     ResponseEntity<Transaction> createIncome(@Valid @RequestBody Transaction transaction) throws URISyntaxException {
         Transaction savedTransaction = transactionRepository.save(transaction);
-        return ResponseEntity.created(new URI("/api/incomes" + savedTransaction.getId())).body(savedTransaction);
+        return ResponseEntity.created(new URI("/api/transactions/" + savedTransaction.getId())).body(savedTransaction);
     }
 }

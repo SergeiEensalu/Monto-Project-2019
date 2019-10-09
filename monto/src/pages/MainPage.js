@@ -3,7 +3,7 @@ import AppNav from "../AppNav";
 import { Container } from "reactstrap";
 import Main_page_pic from "../images/Main_page_pic.png";
 import Form from "react-bootstrap/Form";
-import "../index.css";
+import "./LoginPage.css";
 
 class Main extends Component {
   render() {
