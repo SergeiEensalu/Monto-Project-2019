@@ -13,8 +13,8 @@ export class TransactionsStore {
     await Client.delete(`/api/transactions/${transaction.id}`);
   }
 
-  async add(description, date, sum) {
-    this.transactions.splice(0, 0, (await Client.post("/api/transactions", { description, date, sum })).json);
+  async add(description, date, sum, category, account) {
+    this.transactions.splice(0, 0, (await Client.post("/api/transactions", { description, date, sum, category, account })).json);
   }
 }
 

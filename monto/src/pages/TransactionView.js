@@ -18,6 +18,9 @@ import {
 } from "reactstrap";
 import DatePicker from "react-datepicker";
 import { Link } from "react-router-dom";
+import CategoriesView from "./CategoriesView";
+import AccountsView from "./AccountsView";
+import {Client} from "../util/client";
 
 class TransactionView extends React.Component {
   addingIncome;
@@ -25,14 +28,65 @@ class TransactionView extends React.Component {
   values = {
     description: "",
     date: new Date(),
-    sum: ""
+    sum: "",
+    category: null,
+    account: null
   };
 
-  componentDidMount() {
-    this.props.transactions.load();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      Categories: [],
+      Accounts: [],
+
+      categoriesEdit: false,
+      accountEdit: false
+    };
+
+    this.editCategories = this.editCategories.bind(this);
+    this.editAccounts = this.editAccounts.bind(this);
+  }
+
+  editCategories() {
+    this.setState({categoriesEdit: !this.state.categoriesEdit});
+  }
+
+  editAccounts() {
+    this.setState({accountsEdit: !this.state.accountsEdit});
+  }
+
+  async componentDidMount() {
+    await this.props.transactions.load();
+    const {json: Categories} = await Client.get("/api/categories");
+    const {json: Accounts} = await Client.get("/api/accounts");
+    this.setState({Categories, Accounts, });
   }
 
   render() {
+    const {Categories} = this.state;
+    const {Accounts} = this.state;
+
+    if (this.state.categoriesEdit) {
+      return <div><CategoriesView editCategories={this.editCategories}/></div>
+    }
+
+    if (this.state.accountsEdit) {
+      return <div><AccountsView editAccounts={this.editAccounts}/></div>
+    }
+
+    let categoryList = Categories.map(category => (
+        <option value={Categories.indexOf(category)} key={category.id}>
+          {category.name}
+        </option>
+    ));
+
+    let accountList = Accounts.map(account => (
+        <option value={Accounts.indexOf(account)} key={account.id}>
+          {account.name}
+        </option>
+    ));
+
     return <>
       <AppNav/>
       <Container>
@@ -77,7 +131,10 @@ class TransactionView extends React.Component {
               <FormGroup>
                 <Label for="category">Category</Label>
                 <div className="select-row">
-                  <select className="form-control" onChange={this.handleChange}></select>
+                  <select onChange={this.handleCategoryChange}>
+                    <option selected value={-1}>No category</option>
+                    {categoryList}
+                  </select>
                   <Button size="sm" color="danger" onClick={() => this.editCategories()}>Edit</Button>
                 </div>
               </FormGroup>
@@ -85,7 +142,10 @@ class TransactionView extends React.Component {
               <FormGroup>
                 <Label for="account">Account</Label>
                 <div className="select-row">
-                  <select className="form-control" onChange={this.handleChange}></select>
+                  <select onChange={this.handleAccountChange} defaultValue={""}>
+                    <option selected value={-1}>No account</option>
+                    {accountList}
+                  </select>
                   <Button size="sm" color="danger" onClick={() => this.editAccounts()}>Edit</Button>
                 </div>
               </FormGroup>
@@ -135,10 +195,19 @@ class TransactionView extends React.Component {
     this.values.date = date;
   };
 
+  handleCategoryChange = event => {
+    this.values.category = this.state.Categories[event.target.value];
+  }
+
+  handleAccountChange = event => {
+    this.values.account = this.state.Accounts[event.target.value];
+  }
+
   handleSubmit = async event => {
     event.preventDefault();
 
-    await this.props.transactions.add(this.values.description, this.values.date, this.addingIncome ? this.values.sum : -this.values.sum);
+    await this.props.transactions.add(this.values.description, this.values.date, this.addingIncome ? this.values.sum : -this.values.sum,
+        this.values.category, this.values.account);
     this.addingIncome = undefined;
   };
 }
