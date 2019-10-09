@@ -37,9 +37,6 @@ class TransactionView extends React.Component {
     super(props);
 
     this.state = {
-      Categories: [],
-      Accounts: [],
-
       categoriesEdit: false,
       accountEdit: false
     };
@@ -56,17 +53,13 @@ class TransactionView extends React.Component {
     this.setState({accountsEdit: !this.state.accountsEdit});
   }
 
-  async componentDidMount() {
-    await this.props.transactions.load();
-    const {json: Categories} = await Client.get("/api/categories");
-    const {json: Accounts} = await Client.get("/api/accounts");
-    this.setState({Categories, Accounts, });
+  componentDidMount() {
+    this.props.transactions.load();
+    this.props.categories.load();
+    this.props.accounts.load();
   }
 
   render() {
-    const {Categories} = this.state;
-    const {Accounts} = this.state;
-
     if (this.state.categoriesEdit) {
       return <div><CategoriesView editCategories={this.editCategories}/></div>
     }
@@ -75,14 +68,14 @@ class TransactionView extends React.Component {
       return <div><AccountsView editAccounts={this.editAccounts}/></div>
     }
 
-    let categoryList = Categories.map(category => (
-        <option value={Categories.indexOf(category)} key={category.id}>
+    let categoryList = this.props.categories.categories.map(category => (
+        <option value={this.props.categories.categories.indexOf(category)} key={category.id}>
           {category.name}
         </option>
     ));
 
-    let accountList = Accounts.map(account => (
-        <option value={Accounts.indexOf(account)} key={account.id}>
+    let accountList = this.props.accounts.accounts.map(account => (
+        <option value={this.props.accounts.accounts.indexOf(account)} key={account.id}>
           {account.name}
         </option>
     ));
@@ -173,7 +166,7 @@ class TransactionView extends React.Component {
               <Button color="primary" type="submit">
                 Save
               </Button>
-              <Button color="secondary" tag={Link} to="/">
+              <Button color="secondary" onClick={() => this.addingIncome = undefined}>
                 Cancel
               </Button>
             </ModalFooter>
@@ -196,19 +189,26 @@ class TransactionView extends React.Component {
   };
 
   handleCategoryChange = event => {
-    this.values.category = this.state.Categories[event.target.value];
+    this.values.category = this.props.categories.categories[event.target.value];
   }
 
   handleAccountChange = event => {
-    this.values.account = this.state.Accounts[event.target.value];
+    this.values.account = this.props.accounts.accounts[event.target.value];
   }
 
   handleSubmit = async event => {
     event.preventDefault();
 
-    await this.props.transactions.add(this.values.description, this.values.date, this.addingIncome ? this.values.sum : -this.values.sum,
-        this.values.category, this.values.account);
-    this.addingIncome = undefined;
+    let sum = Math.abs(this.values.sum);
+
+    if(sum == 0) {
+      alert("Sum cannot be 0")
+    }
+    else {
+      await this.props.transactions.add(this.values.description, this.values.date, this.addingIncome ? sum : -sum,
+          this.values.category, this.values.account);
+      this.addingIncome = undefined;
+    }
   };
 }
 
@@ -217,4 +217,4 @@ decorate(TransactionView, {
   values: observable
 });
 
-export default inject("transactions")(observer(TransactionView));
+export default inject("transactions", "categories", "accounts")(observer(TransactionView));
