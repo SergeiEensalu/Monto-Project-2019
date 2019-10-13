@@ -19,6 +19,7 @@
         <frontend-src-dir>${project.basedir}/monto</frontend-src-dir>
         <node.version>v12.3.1</node.version>
         <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
+        <maven.resources.overwrite>true</maven.resources.overwrite>
     </properties>
 
 
