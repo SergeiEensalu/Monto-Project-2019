@@ -24,7 +24,8 @@ public class SpringSecurityConfigurationBasicAuth extends WebSecurityConfigurerA
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
             .antMatchers("/api/auth/*").permitAll()
-            .anyRequest().authenticated()
+            .antMatchers("/api/**").authenticated()
+            .anyRequest().permitAll()
             .and()
             .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class);
     }
