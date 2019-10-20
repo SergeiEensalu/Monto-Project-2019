@@ -199,7 +199,7 @@
                         <phase>prepare-package</phase>
                         <configuration>
                             <target>
-                                <copy file="${project.build.outputDirectory}/example.application.properties" tofile="${project.build.outputDirectory}/application.properties" />
+                                    <copy file="${project.build.outputDirectory}/example.application.properties" tofile="${project.build.outputDirectory}/application.properties" />
                             </target>
                         </configuration>
                     </execution>

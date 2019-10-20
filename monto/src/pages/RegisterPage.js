@@ -1,83 +1,91 @@
-import React, {Component} from "react";
-import "./LoginPage.css";
+import { action, decorate, observable } from "mobx";
+import { inject, observer } from "mobx-react";
+import React from "react";
+import { Button, Container, Form, FormGroup, FormText, Input, Label } from "reactstrap";
 import AppNav from "../AppNav";
-import {Button, Container, FormGroup} from "reactstrap";
-import {inject} from "mobx-react";
 
+class RegisterPage extends React.Component {
+  email = "";
+  emailError = false;
 
-export default inject("auth")(class RegisterPage extends Component {
-  constructor(props) {
-    super(props);
+  password = "";
+  passwordError = false;
 
-    this.state = {
-      email: "",
-      password: "",
-      password2: "",
-      showErrorUserExist: false,
-      showErrorMessage: false
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-
-  }
-
-  handlePost = async e => {
-    e.preventDefault();
-
-    const status = await this.props.auth.register(this.state.email, this.state.password);
-
-    if (status === 409 /* Conflict */) {
-      this.setState({...this.state, showErrorUserExists: true})
-    }
-  };
-
-  validateForm() {
-    return this.state.email.length > 0 &&
-      this.state.password.length >= 8 &&
-      this.state.password === this.state.password2;
-  }
-
-  handleChange(event) {
-    this.setState(
-      {
-        [event.target.name]: event.target.value
-      }
-    )
-  }
+  repeatedPassword = "";
+  repeatedPasswordError = false;
 
   render() {
     return (
-      <div>
+      <>
         <AppNav/>
-        <Container>
-          <form className="loginPageBlock" onSubmit={this.handlePost}>
-            <h4 className="loginLabel">Email</h4>
+
+        <Container className="col-md-4 mt-5">
+          <Form noValidate={true} onSubmit={this.handleSubmit}>
             <FormGroup>
-              <input className="Login" type="email" name="email"
+              <Label for="email">Email</Label>
+              <Input type="email" name="email" id="email" placeholder="Email" value={this.email}
                      onChange={this.handleChange}/>
+              {this.emailError && <FormText color="danger">{this.emailError}</FormText>}
             </FormGroup>
 
-            {this.state.password !== this.state.password2 &&
-            <label className="passwordError">Passwords did not match</label>}
+            <FormGroup>
+              <Label for="password">Password</Label>
+              <Input type="password" name="password" id="password" placeholder="Password" value={this.password}
+                     onChange={this.handleChange}/>
+              <FormText color={this.passwordError ? "danger" : "muted"}>Password must be at least 8 characters
+                long.</FormText>
+            </FormGroup>
 
-            <h4 className="loginLabel">Password</h4>
             <FormGroup>
-              <input className="Login" type="password" name="password"
+              <Label for="repeatedPassword">Repeat the password</Label>
+              <Input type="password" name="repeatedPassword" id="repeatedPassword"
+                     placeholder="Repeat the password"
+                     value={this.repeatedPassword}
                      onChange={this.handleChange}/>
+              {this.repeatedPasswordError && <FormText color="danger">{this.repeatedPasswordError}</FormText>}
             </FormGroup>
-            <h4 className="loginLabel">Password x2</h4>
-            <FormGroup>
-              <input className="Login" type="password" name="password2"
-                     onChange={this.handleChange}/>
-            </FormGroup>
-            <Button
-              disabled={!this.validateForm()}
-              className="Login" type="submit">
-              register
-            </Button>
-          </form>
+
+            <Button color="primary" block>Register</Button>
+          </Form>
         </Container>
-      </div>
+      </>
     );
   }
+
+  handleChange = event => {
+    this[event.target.name] = event.target.value;
+  };
+
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    this.error = undefined;
+
+    this.emailError = this.email.length === 0 && "Please enter an email";
+    this.passwordError = this.password.length < 8 && "Password must be at least 8 characters long";
+    this.repeatedPasswordError = !this.passwordError && this.password !== this.repeatedPassword && "Entered passwords do not match.";
+
+    if (this.emailError || this.passwordError || this.repeatedPasswordError) {
+      return;
+    }
+
+    const status = await this.props.auth.register(this.email, this.password);
+
+    if (status === 409 /* Conflict */) {
+      this.emailError = "This email address is already in use.";
+    }
+  };
+}
+
+decorate(RegisterPage, {
+  email: observable,
+  emailError: observable,
+  password: observable,
+  passwordError: observable,
+  repeatedPassword: observable,
+  repeatedPasswordError: observable,
+  error: observable,
+  handleChange: action
 });
+
+export default inject("auth")(observer(RegisterPage));

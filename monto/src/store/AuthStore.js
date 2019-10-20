@@ -42,7 +42,7 @@ export class AuthStore {
     }
   }
 
-  async logout() {
+  logout = async () => {
     this.token = null;
   }
 }
