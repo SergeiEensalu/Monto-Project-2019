@@ -36,8 +36,11 @@ class FileUploader extends Component {
     return (
       <div>
         <AppNav />
-        <div>
-          <input type="file" onChange={this.handleUploadFile} />
+        <div class="wrapper">
+          <div class="file-upload">
+            <input type="file" onChange={this.handleUploadFile} />
+            <i class="fa fa-arrow-up"></i>
+          </div>
         </div>
       </div>
     );

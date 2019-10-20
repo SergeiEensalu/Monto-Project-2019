@@ -9,7 +9,7 @@ import MainPage from "./pages/MainPage";
 import Dashboard from "./pages/Dashboard";
 import LoginProtected from "./authentication/LoginProtected";
 import FileUploader from "./fileUploading/FileUploader";
-import TransactionView from "./pages/TransactionView";
+import Transactions from "./pages/Transactions";
 
 class App extends Component {
   state = {};
@@ -20,11 +20,23 @@ class App extends Component {
         <Switch>
           <Route path="/" exact={true} component={MainPage} />
           <LoginProtected path="/login" exact={true} component={LoginPage} />
-          <LoginProtected path="/register" exact={true} component={RegisterPage}/>
-          <ProtectedRoute path="/dashboard" exact={true} component={Dashboard}/>
+          <LoginProtected
+            path="/register"
+            exact={true}
+            component={RegisterPage}
+          />
+          <ProtectedRoute
+            path="/dashboard"
+            exact={true}
+            component={Dashboard}
+          />
           <ProtectedRoute path="/incomes" exact={true} component={Incomes} />
           <ProtectedRoute path="/expenses" exact={true} component={Expenses} />
-          <ProtectedRoute path="/transactions" exact={true} component={TransactionView} />
+          <ProtectedRoute
+            path="/transactions"
+            exact={true}
+            component={Transactions}
+          />
           {/*<ProtectedRoute path="/categories" exact={true} component={CategoriesView} />*/}
           {/*<ProtectedRoute path="/accounts" exact={true} component={AccountsView} />*/}
           <Route path="/fileUploader" exact={true} component={FileUploader} />
