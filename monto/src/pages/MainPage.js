@@ -19,12 +19,6 @@ class Main extends Component {
               income/expenses and monitor assets and liabilities. Monto's aim is
               to make analysis and data observation as easy as possible by using
               innovative approaches and solutions
-              <img src={Main_page_pic} alt="Logo" align="centre" />
-              <dir>
-                *this picture and text is just for fun, that is not the real
-                main page, but only for developing process (not empty page).
-                <dir>The real home page in the progress</dir>
-              </dir>
             </h5>
           </Form>
         </Container>
