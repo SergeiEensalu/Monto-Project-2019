@@ -53,6 +53,10 @@
     cursor: pointer;
 }
 
+.wrapper .button-icon:focus {
+    outline: none;
+}
+
 .wrapper .button-icon-red {
     border-color: #c82333;
     color: #c82333;

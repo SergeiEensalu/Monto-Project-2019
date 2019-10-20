@@ -21,6 +21,8 @@ import CategoriesView from "./CategoriesView";
 import AccountsView from "./AccountsView";
 import { FileService } from "../fileUploading/FileService";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 class TransactionView extends React.Component {
   addingIncome;
 
@@ -121,6 +123,17 @@ class TransactionView extends React.Component {
             </div>
           </div>
           <Table>
+            <thead>
+            <tr>
+              <th>Sum</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Account</th>
+              <th>Category</th>
+              <th/>
+            </tr>
+            </thead>
+            <tbody>
             {this.props.transactions.transactions.map(transaction => (
               <tr key={transaction.id}>
                 <td>{transaction.sum}</td>
@@ -147,6 +160,7 @@ class TransactionView extends React.Component {
                 </td>
               </tr>
             ))}
+            </tbody>
           </Table>
 
           <Modal
@@ -174,7 +188,7 @@ class TransactionView extends React.Component {
                 <FormGroup>
                   <Label for="category">Category</Label>
                   <div className="select-row">
-                    <select onChange={this.handleCategoryChange}>
+                    <select onChange={this.handleCategoryChange} className="form-control">
                       <option selected value={-1}>
                         No category
                       </option>
@@ -196,6 +210,7 @@ class TransactionView extends React.Component {
                     <select
                       onChange={this.handleAccountChange}
                       defaultValue={""}
+                      className="form-control"
                     >
                       <option selected value={-1}>
                         No account
