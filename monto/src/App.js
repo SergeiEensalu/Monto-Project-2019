@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./authentication/ProtectedRoute";
 import RegisterPage from "./pages/RegisterPage";
-import MainPage from "./pages/MainPage";
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import LoginProtected from "./authentication/LoginProtected";
 import FileUploader from "./fileUploading/FileUploader";
@@ -16,15 +16,27 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact={true} component={MainPage}/>
-          <LoginProtected path="/login" exact={true} component={LoginPage}/>
-          <LoginProtected path="/register" exact={true} component={RegisterPage}/>
-          <ProtectedRoute path="/dashboard" exact={true} component={Dashboard}/>
-          <ProtectedRoute path="/transactions" exact={true} component={Transactions}/>
+          <Route path="/" exact={true} component={Home} />
+          <LoginProtected path="/login" exact={true} component={LoginPage} />
+          <LoginProtected
+            path="/register"
+            exact={true}
+            component={RegisterPage}
+          />
+          <ProtectedRoute
+            path="/dashboard"
+            exact={true}
+            component={Dashboard}
+          />
+          <ProtectedRoute
+            path="/transactions"
+            exact={true}
+            component={Transactions}
+          />
           {/*<ProtectedRoute path="/categories" exact={true} component={CategoriesView} />*/}
           {/*<ProtectedRoute path="/accounts" exact={true} component={AccountsView} />*/}
-          <Route path="/fileUploader" exact={true} component={FileUploader}/>
-          <Route path="*" component={() => "404 NOT FOUND"}/>
+          <Route path="/fileUploader" exact={true} component={FileUploader} />
+          <Route path="*" component={() => "404 NOT FOUND"} />
         </Switch>
       </BrowserRouter>
     );

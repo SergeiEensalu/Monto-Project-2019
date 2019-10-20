@@ -19,6 +19,7 @@
     "react-dom": "^16.9.0",
     "react-moment": "^0.9.2",
     "react-native": "^0.60.5",
+    "react-responsive-carousel": "^3.1.50",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.1.1",
     "react-shadow-text": "^1.1.0",
