@@ -1,0 +1,67 @@
+.select-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.select-row > div {
+  /** Suurenda DatePicker'i laiust */
+  width: 100%;
+}
+
+.select-row > button {
+  margin-left: 8px;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  background-color: #000000;
+  margin: 30px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px;
+  padding-left: 30px;
+}
+
+.wrapper > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 70px 40px 70px;
+}
+
+.wrapper .button-icon {
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid #b63939;
+  overflow: hidden;
+  background-image: linear-gradient(to bottom, #3e3d41 50%, #ffffff 50%);
+  background-size: 100% 200%;
+  transition: all 1s;
+  color: #ffffff;
+  font-size: 50px;
+}
+
+.wrapper .button-icon input[type="file"] {
+  height: 200px;
+  width: 200px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.wrapper .button-icon:hover {
+  background-position: 0 -100%;
+  color: #3e3d41;
+}
