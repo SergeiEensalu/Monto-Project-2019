@@ -46,11 +46,11 @@ class TransactionView extends React.Component {
   }
 
   editCategories() {
-    this.setState({ categoriesEdit: !this.state.categoriesEdit });
+    this.setState({categoriesEdit: !this.state.categoriesEdit});
   }
 
   editAccounts() {
-    this.setState({ accountsEdit: !this.state.accountsEdit });
+    this.setState({accountsEdit: !this.state.accountsEdit});
   }
 
   componentDidMount() {
@@ -63,7 +63,7 @@ class TransactionView extends React.Component {
     if (this.state.categoriesEdit) {
       return (
         <div>
-          <CategoriesView editCategories={this.editCategories} />
+          <CategoriesView editCategories={this.editCategories}/>
         </div>
       );
     }
@@ -71,7 +71,7 @@ class TransactionView extends React.Component {
     if (this.state.accountsEdit) {
       return (
         <div>
-          <AccountsView editAccounts={this.editAccounts} />
+          <AccountsView editAccounts={this.editAccounts}/>
         </div>
       );
     }
@@ -96,7 +96,7 @@ class TransactionView extends React.Component {
 
     return (
       <>
-        <AppNav />
+        <AppNav/>
         <Container>
           <div class="wrapper">
             <div>
@@ -104,19 +104,19 @@ class TransactionView extends React.Component {
                 className="button-icon"
                 onClick={() => (this.addingIncome = true)}
               >
-                +
+                <i className="fas fa-plus"></i>
               </button>
             </div>
             <div>
               <button
-                className="button-icon"
+                className="button-icon button-icon-red"
                 onClick={() => (this.addingIncome = false)}
               >
-                −
+                <i className="fas fa-minus"></i>
               </button>
             </div>
-            <div class="button-icon">
-              <input type="file" onChange={this.handleUploadFile} />
+            <div class="button-icon button-icon-blue">
+              <input type="file" onChange={this.handleUploadFile}/>
               <i class="fa fa-arrow-up"></i>
             </div>
           </div>
@@ -263,7 +263,7 @@ class TransactionView extends React.Component {
         console.log("File " + file.name + " is uploaded");
         alert("File uploaded successfully.");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
         if (error.response) {
           console.log(
