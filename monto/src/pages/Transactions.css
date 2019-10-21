@@ -43,10 +43,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 4px solid rgb(0, 220, 110);
-    color: rgb(0, 220, 110);
+    border: 4px solid #00DC6E;
+    color: #00DC6E;
     overflow: hidden;
-    background-image: linear-gradient(to bottom, rgba(0, 220, 110, .125) 50%, #ffffff 50%);
+    background-image: linear-gradient(to bottom, #00DC6E20 50%, #ffffff 50%);
     background-size: 100% 200%;
     transition: all 1s;
     font-size: 32px;

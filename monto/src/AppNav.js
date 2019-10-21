@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from "reactstrap";
-import "./pages/LoginPage.css";
 import { inject, observer } from "mobx-react";
 
 class AppNav extends Component {
