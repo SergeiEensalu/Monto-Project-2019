@@ -1,9 +1,11 @@
 package ee.ut.monto.controller;
 
 import ee.ut.monto.model.Transaction;
+import ee.ut.monto.model.User;
 import ee.ut.monto.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,18 +20,8 @@ public final class TransactionController {
     private TransactionRepository transactionRepository;
 
     @GetMapping("/transactions")
-    List<Transaction> getTransactions() {
-        return transactionRepository.findAll();
-    }
-
-    @GetMapping("/transactions/expenses")
-    List<Transaction> getExpenses() {
-        return transactionRepository.findAllExpenses();
-    }
-
-    @GetMapping("/transactions/incomes")
-    List<Transaction> getIncomes() {
-        return transactionRepository.findAllIncomes();
+    List<Transaction> getTransactions(Authentication authentication) {
+        return transactionRepository.findAllByUser((User) authentication.getPrincipal());
     }
 
     @DeleteMapping("/transactions/{id}")
@@ -39,7 +31,8 @@ public final class TransactionController {
     }
 
     @PostMapping("/transactions")
-    ResponseEntity<Transaction> createIncome(@Valid @RequestBody Transaction transaction) throws URISyntaxException {
+    ResponseEntity<Transaction> createIncome(@Valid @RequestBody Transaction transaction, Authentication authentication) throws URISyntaxException {
+        transaction.setUser((User) authentication.getPrincipal());
         Transaction savedTransaction = transactionRepository.save(transaction);
         return ResponseEntity.created(new URI("/api/transactions/" + savedTransaction.getId())).body(savedTransaction);
     }

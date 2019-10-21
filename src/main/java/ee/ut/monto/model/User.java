@@ -3,7 +3,6 @@ package ee.ut.monto.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 
@@ -16,10 +15,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull
+    @Column(nullable = false)
     private String email;
 
-    @NonNull
+    @Column(nullable = false)
     @JsonIgnore
     private String hash;
 }

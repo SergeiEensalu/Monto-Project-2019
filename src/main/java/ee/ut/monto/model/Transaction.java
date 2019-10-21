@@ -15,10 +15,13 @@ public final class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private Instant date;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private Double sum;
 
     @ManyToOne
@@ -26,4 +29,7 @@ public final class Transaction {
 
     @ManyToOne
     private Account account;
+
+    @ManyToOne(optional = false)
+    private User user;
 }

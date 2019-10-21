@@ -13,8 +13,6 @@ public class JwtService {
     private String secret;
 
     public String generateToken(User user) {
-        System.out.println(secret);
-
         return Jwts
             .builder()
             .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS512)

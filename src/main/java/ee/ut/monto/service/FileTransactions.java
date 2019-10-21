@@ -2,6 +2,7 @@ package ee.ut.monto.service;
 
 import ee.ut.monto.model.Category;
 import ee.ut.monto.model.Transaction;
+import ee.ut.monto.model.User;
 import ee.ut.monto.repository.CategoryRepository;
 import ee.ut.monto.repository.TransactionRepository;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -26,7 +27,7 @@ public class FileTransactions {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public void saveXLSFileTransactions(MultipartFile multipartFile) {
+    public void saveXLSFileTransactions(MultipartFile multipartFile, User user) {
         try {
             HSSFWorkbook workbook = new HSSFWorkbook(multipartFile.getInputStream());
             HSSFSheet sheet = workbook.getSheetAt(0);
@@ -66,7 +67,7 @@ public class FileTransactions {
                             break;
                     }
                 }
-                saveTransaction(date, categoryName, description, sum);
+                saveTransaction(date, categoryName, description, sum, user);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -75,7 +76,7 @@ public class FileTransactions {
         }
     }
 
-    public void saveCSVFileTransactions(MultipartFile multipartFile) {
+    public void saveCSVFileTransactions(MultipartFile multipartFile, User user) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(multipartFile.getInputStream()));
             bufferedReader.readLine();
@@ -95,7 +96,7 @@ public class FileTransactions {
                     categoryName = data[3].replace("\"", "");
                     description = data[4].replace("\"", "");
                     sum = Double.parseDouble(data[5].replace("\"", "").replace(",", "."));
-                    saveTransaction(date, categoryName, description, -sum);
+                    saveTransaction(date, categoryName, description, -sum, user);
                 }
             }
             bufferedReader.close();
@@ -108,7 +109,7 @@ public class FileTransactions {
         }
     }
 
-    private void saveTransaction(Date date, String categoryName, String description, Double sum) {
+    private void saveTransaction(Date date, String categoryName, String description, Double sum, User user) {
         Category category = new Category();
         category.setName(categoryName);
 
@@ -119,6 +120,7 @@ public class FileTransactions {
         transaction.setCategory(category);
         transaction.setDescription(description);
         transaction.setSum(sum);
+        transaction.setUser(user);
 
         transactionRepository.save(transaction);
     }

@@ -4,9 +4,7 @@ import AppNav from "../AppNav";
 class Dashboard extends Component {
   render() {
     return (
-      <div>
-        <AppNav/>
-      </div>
+      <AppNav></AppNav>
     );
   }
 }
