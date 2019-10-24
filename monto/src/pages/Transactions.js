@@ -62,6 +62,10 @@ class TransactionView extends React.Component {
   }
 
   render() {
+    if (this.props.transactions.transactions === undefined) { // If transactions are still being loaded
+      return <AppNav></AppNav>
+    }
+
     if (this.state.categoriesEdit) {
       return (
         <div>
@@ -100,7 +104,7 @@ class TransactionView extends React.Component {
       <>
         <AppNav/>
         <Container>
-          <div class="wrapper">
+          <div className="wrapper">
             <div>
               <button
                 className="button-icon"
@@ -117,9 +121,9 @@ class TransactionView extends React.Component {
                 <i className="fas fa-minus"></i>
               </button>
             </div>
-            <div class="button-icon button-icon-blue">
+            <div className="button-icon button-icon-blue">
               <input type="file" onChange={this.handleUploadFile}/>
-              <i class="fa fa-arrow-up"></i>
+              <i className="fa fa-arrow-up"></i>
             </div>
           </div>
           <Table>

@@ -2,7 +2,7 @@ import { Client } from "../util/client";
 import { action, decorate, observable } from "mobx";
 
 export class TransactionsStore {
-  transactions = [];
+  transactions = undefined;
 
   async load() {
     this.transactions = (await Client.get("/api/transactions")).json;

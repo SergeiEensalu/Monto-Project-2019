@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -21,7 +23,7 @@ public final class TransactionController {
 
     @GetMapping("/transactions")
     List<Transaction> getTransactions(Authentication authentication) {
-        return transactionRepository.findAllByUser((User) authentication.getPrincipal());
+        return transactionRepository.findAllByUserAndDateAfter((User) authentication.getPrincipal(), Instant.now().minus(Duration.ofDays(30)));
     }
 
     @DeleteMapping("/transactions/{id}")
