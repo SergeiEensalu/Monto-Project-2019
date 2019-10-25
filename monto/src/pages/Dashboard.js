@@ -43,6 +43,7 @@ const toPrettyNumber = number => {
 class Dashboard extends React.Component {
   componentDidMount() {
     this.props.transactions.load();
+
   }
 
   render() {
@@ -80,7 +81,7 @@ class Dashboard extends React.Component {
               <StatsCard layout={1} movement={0} total="47,8%" label="Average saving proportion"/>
             </Grid.Col>
             <Grid.Col width={4}>
-              <StatsCard layout={1} movement={0} total="621 €" label="Average saving"/>
+              <StatsCard layout={1} movement={0} total="621 €" label="3 most popular categories"/>
             </Grid.Col>
           </Grid.Row>
 

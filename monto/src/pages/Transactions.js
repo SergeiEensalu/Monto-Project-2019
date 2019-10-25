@@ -4,7 +4,6 @@ import AppNav from "../AppNav";
 import "./Transactions.css";
 import { decorate, observable } from "mobx";
 import {
-  Button,
   Container,
   Form,
   FormGroup,
@@ -22,6 +21,10 @@ import AccountsView from "./AccountsView";
 import { FileService } from "../fileUploading/FileService";
 
 import "react-datepicker/dist/react-datepicker.css";
+
+import { Button } from "tabler-react";
+import "tabler-react/dist/Tabler.css";
+
 
 class TransactionView extends React.Component {
   addingIncome;
@@ -106,24 +109,17 @@ class TransactionView extends React.Component {
         <Container>
           <div className="wrapper">
             <div>
-              <button
-                className="button-icon"
-                onClick={() => (this.addingIncome = true)}
-              >
-                <i className="fas fa-plus"></i>
-              </button>
+              <Button color="success" size="sm" icon="plus" onClick={() => (this.addingIncome = true)}>Add income</Button>
             </div>
             <div>
-              <button
-                className="button-icon button-icon-red"
-                onClick={() => (this.addingIncome = false)}
-              >
-                <i className="fas fa-minus"></i>
-              </button>
+              <div>
+                <Button color="danger" size="sm" icon="minus" onClick={() => (this.addingIncome = false)}>Add expense</Button>
+              </div>
             </div>
-            <div className="button-icon button-icon-blue">
-              <input type="file" onChange={this.handleUploadFile}/>
-              <i className="fa fa-arrow-up"></i>
+            <div>
+              <Button className="upload-button" color="primary" size="sm" icon="upload">Upload file
+                <input type="file" onChange={this.handleUploadFile}/>
+              </Button>
             </div>
           </div>
           <Table>
