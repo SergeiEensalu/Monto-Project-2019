@@ -18,15 +18,15 @@ public class SpringSecurityConfigurationBasicAuth extends WebSecurityConfigurerA
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .cors().and()
-            .csrf().disable()
-            .httpBasic().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
-            .antMatchers("/api/auth/*").permitAll()
-            .antMatchers("/api/**").authenticated()
-            .anyRequest().permitAll()
-            .and()
-            .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class);
+                .cors().and()
+                .csrf().disable()
+                .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers("/api/auth/*").permitAll()
+                .antMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+                .and()
+                .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class);
     }
 }

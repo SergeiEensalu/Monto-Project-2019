@@ -6,7 +6,6 @@ import RegisterPage from "./pages/RegisterPage";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import LoginProtected from "./authentication/LoginProtected";
-import FileUploader from "./fileUploading/FileUploader";
 import Transactions from "./pages/Transactions";
 
 class App extends Component {
@@ -35,7 +34,6 @@ class App extends Component {
           />
           {/*<ProtectedRoute path="/categories" exact={true} component={CategoriesView} />*/}
           {/*<ProtectedRoute path="/accounts" exact={true} component={AccountsView} />*/}
-          <Route path="/fileUploader" exact={true} component={FileUploader} />
           <Route path="*" component={() => "404 NOT FOUND"} />
         </Switch>
       </BrowserRouter>

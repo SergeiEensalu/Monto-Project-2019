@@ -25,7 +25,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "tabler-react";
 import "tabler-react/dist/Tabler.css";
 
-
 class TransactionView extends React.Component {
   addingIncome;
 
@@ -44,18 +43,17 @@ class TransactionView extends React.Component {
       categoriesEdit: false,
       accountEdit: false
     };
-
+    this.fileService = new FileService();
     this.editCategories = this.editCategories.bind(this);
     this.editAccounts = this.editAccounts.bind(this);
-    this.fileService = new FileService();
   }
 
   editCategories() {
-    this.setState({categoriesEdit: !this.state.categoriesEdit});
+    this.setState({ categoriesEdit: !this.state.categoriesEdit });
   }
 
   editAccounts() {
-    this.setState({accountsEdit: !this.state.accountsEdit});
+    this.setState({ accountsEdit: !this.state.accountsEdit });
   }
 
   componentDidMount() {
@@ -65,14 +63,15 @@ class TransactionView extends React.Component {
   }
 
   render() {
-    if (this.props.transactions.transactions === undefined) { // If transactions are still being loaded
-      return <AppNav></AppNav>
+    if (this.props.transactions.transactions === undefined) {
+      // If transactions are still being loaded
+      return <AppNav></AppNav>;
     }
 
     if (this.state.categoriesEdit) {
       return (
         <div>
-          <CategoriesView editCategories={this.editCategories}/>
+          <CategoriesView editCategories={this.editCategories} />
         </div>
       );
     }
@@ -80,7 +79,7 @@ class TransactionView extends React.Component {
     if (this.state.accountsEdit) {
       return (
         <div>
-          <AccountsView editAccounts={this.editAccounts}/>
+          <AccountsView editAccounts={this.editAccounts} />
         </div>
       );
     }
@@ -105,61 +104,83 @@ class TransactionView extends React.Component {
 
     return (
       <>
-        <AppNav/>
+        <AppNav />
         <Container>
           <div className="wrapper">
             <div>
-              <Button color="success" size="sm" icon="plus" onClick={() => (this.addingIncome = true)}>Add income</Button>
+              <Button
+                color="success"
+                size="sm"
+                icon="plus"
+                onClick={() => (this.addingIncome = true)}
+              >
+                Add income
+              </Button>
             </div>
             <div>
               <div>
-                <Button color="danger" size="sm" icon="minus" onClick={() => (this.addingIncome = false)}>Add expense</Button>
+                <Button
+                  color="danger"
+                  size="sm"
+                  icon="minus"
+                  onClick={() => (this.addingIncome = false)}
+                >
+                  Add expense
+                </Button>
               </div>
             </div>
             <div>
-              <Button className="upload-button" color="primary" size="sm" icon="upload">Upload file
-                <input type="file" onChange={this.handleUploadFile}/>
+              <Button
+                className="upload-button"
+                color="primary"
+                size="sm"
+                icon="upload"
+              >
+                Upload file
+                <input type="file" onChange={this.handleUploadFile} />
               </Button>
             </div>
           </div>
           <Table>
             <thead>
-            <tr>
-              <th>Sum</th>
-              <th>Description</th>
-              <th>Date</th>
-              <th>Account</th>
-              <th>Category</th>
-              <th/>
-            </tr>
+              <tr>
+                <th>Sum</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Account</th>
+                <th>Category</th>
+                <th />
+              </tr>
             </thead>
             <tbody>
-            {this.props.transactions.transactions.map(transaction => (
-              <tr key={transaction.id}>
-                <td>{transaction.sum}</td>
-                <td>{transaction.description}</td>
-                <td>{transaction.date}</td>
-                <td>
-                  {transaction.account
-                    ? transaction.account.name
-                    : "No account"}
-                </td>
-                <td>
-                  {transaction.category
-                    ? transaction.category.name
-                    : "No category"}
-                </td>
-                <td>
-                  <Button
-                    size="sm"
-                    color="danger"
-                    onClick={() => this.props.transactions.delete(transaction)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
+              {this.props.transactions.transactions.map(transaction => (
+                <tr key={transaction.id}>
+                  <td>{transaction.sum}</td>
+                  <td>{transaction.description}</td>
+                  <td>{transaction.date}</td>
+                  <td>
+                    {transaction.account
+                      ? transaction.account.name
+                      : "No account"}
+                  </td>
+                  <td>
+                    {transaction.category
+                      ? transaction.category.name
+                      : "No category"}
+                  </td>
+                  <td>
+                    <Button
+                      size="sm"
+                      color="danger"
+                      onClick={() =>
+                        this.props.transactions.delete(transaction)
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
 
@@ -188,7 +209,10 @@ class TransactionView extends React.Component {
                 <FormGroup>
                   <Label for="category">Category</Label>
                   <div className="select-row">
-                    <select onChange={this.handleCategoryChange} className="form-control">
+                    <select
+                      onChange={this.handleCategoryChange}
+                      className="form-control"
+                    >
                       <option selected value={-1}>
                         No category
                       </option>
@@ -268,17 +292,19 @@ class TransactionView extends React.Component {
   }
 
   handleUploadFile = event => {
-    const data = new FormData();
+    const formData = new FormData();
     let file = event.target.files[0];
-    data.append("file", event.target.files[0]);
-    data.append("name", "my_file");
+    formData.append("file", file);
     this.fileService
-      .uploadFileToServer(data)
+      .uploadFileToServer(formData)
       .then(response => {
         console.log("File " + file.name + " is uploaded");
         alert("File uploaded successfully.");
+        this.props.transactions.load();
+        this.props.categories.load();
+        this.props.accounts.load();
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error);
         if (error.response) {
           console.log(

@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import AppNav from "../AppNav";
-import { Button, Container, Form, FormGroup, Input, Label, Table } from "reactstrap";
+import {
+  Button,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Table
+} from "reactstrap";
 import { Client } from "../util/client";
 
 class AccountsView extends Component {
@@ -24,15 +32,15 @@ class AccountsView extends Component {
   }
 
   async componentDidMount() {
-    const {json: Accounts} = await Client.get("/api/accounts");
-    this.setState({Accounts, isLoading: false});
+    const { json: Accounts } = await Client.get("/api/accounts");
+    this.setState({ Accounts, isLoading: false });
   }
 
   async remove(id) {
     await Client.delete(`/api/accounts/${id}`);
 
     let updatedAccounts = [...this.state.Accounts].filter(i => i.id !== id);
-    this.setState({Accounts: updatedAccounts});
+    this.setState({ Accounts: updatedAccounts });
   }
 
   async handleSubmit(event) {
@@ -45,17 +53,16 @@ class AccountsView extends Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let item = {...this.state.item};
+    let item = { ...this.state.item };
     item[name] = value;
-    this.setState({item});
+    this.setState({ item });
   }
 
   render() {
-    const {Accounts, isLoading} = this.state;
+    const { Accounts, isLoading } = this.state;
     if (isLoading) return <div>Loading...</div>;
 
     let rows = Accounts.map(account => (
-
       <tr key={account.id}>
         <td>{account.name}</td>
         <td>{account.type}</td>
@@ -73,9 +80,8 @@ class AccountsView extends Component {
 
     return (
       <div>
-        <AppNav/>
+        <AppNav />
         <Container>
-
           <h2>Accounts</h2>
           <Form onSubmit={this.handleSubmit}>
             <FormGroup>
@@ -112,11 +118,11 @@ class AccountsView extends Component {
           <h3>Account List</h3>
           <Table className="mt-4">
             <thead>
-            <tr>
-              <th> Account</th>
-              <th> Type</th>
-              <th width="10%">Action</th>
-            </tr>
+              <tr>
+                <th> Account</th>
+                <th> Type</th>
+                <th width="10%">Action</th>
+              </tr>
             </thead>
             <tbody>{rows}</tbody>
           </Table>

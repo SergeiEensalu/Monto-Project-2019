@@ -1,5 +1,13 @@
-import React, { Component } from 'react';
-import { Button, Container, Form, FormGroup, Input, Label, Table } from "reactstrap";
+import React, { Component } from "react";
+import {
+  Button,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Table
+} from "reactstrap";
 import AppNav from "../AppNav";
 import { Client } from "../util/client";
 
@@ -23,15 +31,15 @@ class CategoriesView extends Component {
   }
 
   async componentDidMount() {
-    const {json} = await Client.get("/api/categories");
-    this.setState({Categories: json, isLoading: false});
+    const { json } = await Client.get("/api/categories");
+    this.setState({ Categories: json, isLoading: false });
   }
 
   async remove(id) {
     await Client.delete(`/api/categories/${id}`);
 
     let updatedCategories = [...this.state.Categories].filter(i => i.id !== id);
-    this.setState({Categories: updatedCategories});
+    this.setState({ Categories: updatedCategories });
   }
 
   async handleSubmit(event) {
@@ -44,18 +52,16 @@ class CategoriesView extends Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let item = {...this.state.item};
+    let item = { ...this.state.item };
     item[name] = value;
-    this.setState({item});
+    this.setState({ item });
   }
 
-
   render() {
-    const {Categories, isLoading} = this.state;
+    const { Categories, isLoading } = this.state;
     if (isLoading) return <div>Loading...</div>;
 
     let rows = Categories.map(category => (
-
       <tr key={category.id}>
         <td>{category.name}</td>
         <td>
@@ -72,7 +78,7 @@ class CategoriesView extends Component {
 
     return (
       <div>
-        <AppNav/>
+        <AppNav />
         <Container>
           <h2>Categories</h2>
           <Form onSubmit={this.handleSubmit}>
@@ -100,10 +106,10 @@ class CategoriesView extends Component {
           <h3>Category List</h3>
           <Table className="mt-4">
             <thead>
-            <tr>
-              <th> Category</th>
-              <th width="10%">Action</th>
-            </tr>
+              <tr>
+                <th> Category</th>
+                <th width="10%">Action</th>
+              </tr>
             </thead>
             <tbody>{rows}</tbody>
           </Table>

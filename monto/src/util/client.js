@@ -1,5 +1,4 @@
-import {rootStore} from "../store/RootStore";
-
+import { rootStore } from "../store/RootStore";
 
 export class Client {
   static async fetch(url, method, body) {
@@ -11,7 +10,11 @@ export class Client {
       headers.append("Authorization", "Bearer " + rootStore.auth.token);
     }
 
-    const response = await fetch(url, {method, headers, body: JSON.stringify(body)});
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(body)
+    });
 
     let json;
 
@@ -21,7 +24,7 @@ export class Client {
       // ignore
     }
 
-    return {status: response.status, json};
+    return { status: response.status, json };
   }
 
   static async get(url, body) {

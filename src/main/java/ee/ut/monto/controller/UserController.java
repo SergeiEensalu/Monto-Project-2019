@@ -4,7 +4,6 @@ import ee.ut.monto.model.User;
 import ee.ut.monto.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collection;
 
 @RestController

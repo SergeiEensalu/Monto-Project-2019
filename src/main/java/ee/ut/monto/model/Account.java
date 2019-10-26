@@ -2,7 +2,6 @@ package ee.ut.monto.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity

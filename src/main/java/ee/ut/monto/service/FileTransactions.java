@@ -67,6 +67,7 @@ public class FileTransactions {
                             break;
                     }
                 }
+                //System.out.printf("File uploaded");
                 saveTransaction(date, categoryName, description, sum, user);
             }
         } catch (FileNotFoundException e) {

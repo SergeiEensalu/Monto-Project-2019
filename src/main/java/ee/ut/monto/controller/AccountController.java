@@ -4,15 +4,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
-
 import ee.ut.monto.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import ee.ut.monto.repository.AccountRepository;
-
 import javax.validation.Valid;
 
 @RestController
