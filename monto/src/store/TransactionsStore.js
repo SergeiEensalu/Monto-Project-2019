@@ -8,6 +8,13 @@ export class TransactionsStore {
     this.transactions = (await Client.get("/api/transactions")).json;
   }
 
+  async update(transaction) {
+    // this.transactions.set(this.transactions.indexOf(transaction), (await Client.put(`/api/transactions/${transaction.id}`,
+    //     { transaction })));
+    await Client.put(`/api/transactions/${transaction.id}`,
+         transaction );
+  }
+
   async delete(transaction) {
     this.transactions.splice(this.transactions.indexOf(transaction), 1);
     await Client.delete(`/api/transactions/${transaction.id}`);

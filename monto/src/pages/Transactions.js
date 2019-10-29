@@ -27,6 +27,8 @@ import "tabler-react/dist/Tabler.css";
 
 class TransactionView extends React.Component {
   addingIncome;
+  isEditing = false;
+  editableTransaction = null;
 
   values = {
     description: "",
@@ -179,19 +181,34 @@ class TransactionView extends React.Component {
                       Delete
                     </Button>
                   </td>
+                  <td>
+                    <Button
+                      onClick={() => {
+                        this.editableTransaction = transaction;
+                        this.isEditing = true;
+                        this.values.description = this.editableTransaction.description;
+                        this.values.sum = this.editableTransaction.sum;
+                        this.values.category = this.editableTransaction.category;
+                        this.values.account = this.editableTransaction.account;
+                      }}
+                      >
+                        Edit
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
 
           <Modal
-            isOpen={this.addingIncome !== undefined}
+            isOpen={this.addingIncome !== undefined || this.isEditing}
             toggle={this.hideModal}
             className={this.props.className}
           >
-            <Form onSubmit={this.handleSubmit} noValidate>
+            <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
               <ModalHeader toggle={this.hideModal}>
-                {this.addingIncome ? "Add income" : "Add expense"}
+                {/*{this.addingIncome ? "Add income" : "Add expense"}*/}
+                {/* Edit header needs to be added */}
               </ModalHeader>
 
               <ModalBody>
@@ -279,7 +296,9 @@ class TransactionView extends React.Component {
                 </Button>
                 <Button
                   color="secondary"
-                  onClick={() => (this.addingIncome = undefined)}
+                  onClick={() =>
+                    this.hideModal()
+                  }
                 >
                   Cancel
                 </Button>
@@ -319,6 +338,14 @@ class TransactionView extends React.Component {
 
   hideModal = () => {
     this.addingIncome = undefined;
+    this.isEditing = false;
+    this.editableTransaction = null;
+
+    this.values.description = "";
+    this.values.sum = "";
+    this.values.account = null;
+    this.values.category = null;
+    this.values.date = new Date();
   };
 
   handleChange = event => {
@@ -336,6 +363,18 @@ class TransactionView extends React.Component {
   handleAccountChange = event => {
     this.values.account = this.props.accounts.accounts[event.target.value];
   };
+
+  handleUpdate = async event => {
+    event.preventDefault();
+
+    this.editableTransaction.description = this.values.description;
+    this.editableTransaction.sum = this.values.sum;
+    this.editableTransaction.account = this.values.account;
+    this.editableTransaction.category = this.values.category;
+
+    await this.props.transactions.update(this.editableTransaction);
+    this.hideModal();
+  }
 
   handleSubmit = async event => {
     event.preventDefault();
@@ -358,6 +397,7 @@ class TransactionView extends React.Component {
 }
 
 decorate(TransactionView, {
+  isEditing: observable,
   addingIncome: observable,
   values: observable
 });
