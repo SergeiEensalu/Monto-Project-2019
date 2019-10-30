@@ -157,9 +157,16 @@ class TransactionView extends React.Component {
             <tbody>
               {this.props.transactions.transactions.map(transaction => (
                 <tr key={transaction.id}>
-                  <td>{transaction.sum}</td>
+                  <td>
+                    {new Intl.NumberFormat('eu-EST', {
+                      style: 'currency',
+                      currency: 'EUR'
+                    }).format(transaction.sum)}
+                  </td>
                   <td>{transaction.description}</td>
-                  <td>{transaction.date}</td>
+                  <td>
+                    {new Date(transaction.date).toLocaleDateString()}
+                  </td>
                   <td>
                     {transaction.account
                       ? transaction.account.name
@@ -207,8 +214,7 @@ class TransactionView extends React.Component {
           >
             <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
               <ModalHeader toggle={this.hideModal}>
-                {/*{this.addingIncome ? "Add income" : "Add expense"}*/}
-                {/* Edit header needs to be added */}
+                {this.getHeader()}
               </ModalHeader>
 
               <ModalBody>
@@ -348,6 +354,13 @@ class TransactionView extends React.Component {
     this.values.date = new Date();
   };
 
+  getHeader = () => {
+    if (this.addingIncome !== undefined){
+      return this.addingIncome ? "Add income" : "Add expense";
+    }
+    return "Edit transaction";
+  };
+
   handleChange = event => {
     this.values[event.target.name] = event.target.value;
   };
@@ -374,7 +387,7 @@ class TransactionView extends React.Component {
 
     await this.props.transactions.update(this.editableTransaction);
     this.hideModal();
-  }
+  };
 
   handleSubmit = async event => {
     event.preventDefault();

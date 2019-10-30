@@ -21,7 +21,7 @@ public final class TransactionController {
 
     @GetMapping("/transactions")
     List<Transaction> getTransactions(Authentication authentication) {
-        return transactionRepository.findAllByUserOrderByDateAsc((User) authentication.getPrincipal());
+        return transactionRepository.findAllByUserOrderByDateDesc((User) authentication.getPrincipal());
     }
 
     @GetMapping("/transactions/{id}")
@@ -36,7 +36,8 @@ public final class TransactionController {
     }
 
     @PutMapping("/transactions/{id}")
-    ResponseEntity<Transaction> updateTransaction(@Valid @RequestBody Transaction transaction) {
+    ResponseEntity<Transaction> updateTransaction(@Valid @RequestBody Transaction transaction, Authentication authentication) {
+        transaction.setUser((User) authentication.getPrincipal());
         Transaction updatedTransaction = transactionRepository.save(transaction);
         System.out.println(transaction);
         return ResponseEntity.ok().body(updatedTransaction);

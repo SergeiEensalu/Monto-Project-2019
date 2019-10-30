@@ -1,5 +1,6 @@
 package ee.ut.monto.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -19,7 +20,7 @@ public class Account {
     @Column(nullable = false)
     private String type; // personal or business? might need changing
 
-//    @ManyToOne
-//    @JsonIgnore
-//    private Users user;
+    @JsonIgnore
+    @ManyToOne(optional = false)
+    private User user;
 }
