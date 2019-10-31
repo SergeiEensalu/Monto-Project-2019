@@ -158,7 +158,7 @@ class TransactionView extends React.Component {
               {this.props.transactions.transactions.map(transaction => (
                 <tr key={transaction.id}>
                   <td>
-                    {new Intl.NumberFormat('eu-EST', {
+                    {new Intl.NumberFormat('eu-EE', {
                       style: 'currency',
                       currency: 'EUR'
                     }).format(transaction.sum)}
@@ -406,6 +406,7 @@ class TransactionView extends React.Component {
       );
       this.addingIncome = undefined;
     }
+    this.hideModal();
   };
 }
 
