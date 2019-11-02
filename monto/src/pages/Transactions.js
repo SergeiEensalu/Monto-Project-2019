@@ -186,7 +186,6 @@ class TransactionView extends React.Component {
 
           <Modal
             isOpen={this.addingIncome !== undefined}
-            toggle={this.hideModal}
             className={this.props.className}
           >
             <Form onSubmit={this.handleSubmit} noValidate>
@@ -299,7 +298,6 @@ class TransactionView extends React.Component {
       .uploadFileToServer(formData)
       .then(response => {
         console.log("File " + file.name + " is uploaded");
-        alert("File uploaded successfully.");
         this.props.transactions.load();
         this.props.categories.load();
         this.props.accounts.load();
@@ -315,10 +313,6 @@ class TransactionView extends React.Component {
           console.log("Upload error. HTTP error/status code=", error.message);
         }
       });
-  };
-
-  hideModal = () => {
-    this.addingIncome = undefined;
   };
 
   handleChange = event => {
