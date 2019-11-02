@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import AppNav from "../AppNav";
 import {
   Button,
   Container,
@@ -7,129 +6,191 @@ import {
   FormGroup,
   Input,
   Label,
-  Table
+  Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader
 } from "reactstrap";
-import { Client } from "../util/client";
+import AppNav from "../AppNav";
+import {decorate, observable} from "mobx";
+import {inject, observer} from "mobx-react";
 
 class AccountsView extends Component {
-  emptyItem = {
+  values = {
     id: 105,
     name: "",
     type: ""
   };
 
-  constructor(props) {
-    super(props);
+  addingAccount = false;
+  isEditing = false;
+  editableAccount = null;
 
-    this.state = {
-      isLoading: true,
-      Accounts: [],
-      item: this.emptyItem
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+  componentDidMount() {
+    this.props.accounts.load();
   }
 
-  async componentDidMount() {
-    const { json: Accounts } = await Client.get("/api/accounts");
-    this.setState({ Accounts, isLoading: false });
-  }
-
-  async remove(id) {
-    await Client.delete(`/api/accounts/${id}`);
-
-    let updatedAccounts = [...this.state.Accounts].filter(i => i.id !== id);
-    this.setState({ Accounts: updatedAccounts });
-  }
-
-  async handleSubmit(event) {
+  handleSubmit = async event => {
     event.preventDefault();
-    await Client.post("/api/accounts", this.state.item);
-    window.location.reload();
-  }
+    await this.props.accounts.add(
+        this.values.name,
+        this.values.type
+    );
+    this.hideModal();
+  };
 
-  handleChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    let item = { ...this.state.item };
-    item[name] = value;
-    this.setState({ item });
-  }
+  handleUpdate = async event => {
+    event.preventDefault();
+
+    this.editableAccount.name = this.values.name;
+    this.editableAccount.type = this.values.type;
+
+    await this.props.accounts.update(this.editableAccount);
+    this.hideModal();
+  };
+
+  handleChange = event => {
+    this.values[event.target.name] = event.target.value;
+  };
+
+  hideModal = () => {
+    this.addingAccount = false;
+    this.isEditing = false;
+
+    this.values.name = "";
+    this.values.type = "";
+  };
 
   render() {
-    const { Accounts, isLoading } = this.state;
-    if (isLoading) return <div>Loading...</div>;
+    if (this.props.accounts.accounts === undefined) {
+      return <AppNav></AppNav>;
+    }
 
-    let rows = Accounts.map(account => (
-      <tr key={account.id}>
-        <td>{account.name}</td>
-        <td>{account.type}</td>
-        <td>
-          <Button
-            size="sm"
-            color="danger"
-            onClick={() => this.remove(account.id)}
-          >
-            Delete
-          </Button>
-        </td>
-      </tr>
+    let rows = this.props.accounts.accounts.map(account => (
+        <tr key={account.id}>
+          <td>{account.name}</td>
+          <td>{account.type}</td>
+          <td>
+            <Button
+                size="sm"
+                color="danger"
+                onClick={() => this.props.accounts.delete(account)}
+            >
+              Delete
+            </Button>
+          </td>
+          <td>
+            <Button
+                size="sm"
+                onClick={() => {
+                  this.editableAccount = account;
+                  this.isEditing = true;
+                  this.values.name = this.editableAccount.name;
+                  this.values.type = this.editableAccount.type;
+                }}
+            >
+              Edit
+            </Button>
+          </td>
+        </tr>
     ));
 
     return (
-      <div>
-        <AppNav />
-        <Container>
-          <h2>Accounts</h2>
-          <Form onSubmit={this.handleSubmit}>
-            <FormGroup>
-              <Label for="name">Name</Label>
-              <Input
-                type="text"
-                name="name"
-                id="name"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="type">Type</Label>
-              <Input
-                type="text"
-                name="type"
-                id="type"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Button color="primary" type="submit">
-                Save
-              </Button>{" "}
-              <Button color="secondary" onClick={this.props.editAccounts}>
-                Cancel
-              </Button>
-            </FormGroup>
-          </Form>
-        </Container>
-        <Container>
-          <h3>Account List</h3>
-          <Table className="mt-4">
-            <thead>
+        <div>
+          <AppNav />
+          <Container style={{width: 600, alignItems: 'center', justifyContent: 'center'}}>
+            <div>
+              <div>
+                <Button
+                    color="success"
+                    size="sm"
+                    icon="plus"
+                    onClick={() => (this.addingAccount = true)}
+                >
+                  Add account
+                </Button>
+              </div>
+            </div>
+            <Table className="mt-4">
+              <thead>
               <tr>
                 <th> Account</th>
                 <th> Type</th>
-                <th width="10%">Action</th>
+                <th width="10%"></th>
+                <th width="10%"></th>
               </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
-        </Container>
-      </div>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+            <Modal
+                isOpen={this.addingAccount || this.isEditing}
+                toggle={this.hideModal}
+                className={this.props.className}
+            >
+              <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
+                <ModalHeader toggle={this.hideModal}>
+                  {this.isEditing ? "Add new account" : "Edit the account"}
+                </ModalHeader>
+                <ModalBody>
+                  <FormGroup>
+                    <Label for="name">Name</Label>
+                    <Input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value={this.values.name}
+                        onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="type">Type</Label>
+                    <Input
+                        type="text"
+                        name="type"
+                        id="type"
+                        value={this.values.type}
+                        onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type="submit">
+                    Save
+                  </Button>
+                  <Button
+                      color="secondary"
+                      onClick={() =>
+                          this.hideModal()
+                      }
+                  >
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </Form>
+            </Modal>
+            <div>
+              <Button
+                  color="success"
+                  size="sm"
+                  icon="plus"
+                  onClick={this.props.editAccounts}
+              >
+                Go back
+              </Button>
+            </div>
+          </Container>
+        </div>
     );
   }
 }
 
-export default AccountsView;
+decorate(AccountsView, {
+  addingAccount: observable,
+  isEditing: observable,
+  values: observable
+});
+
+export default inject("accounts")(
+    observer(AccountsView)
+);

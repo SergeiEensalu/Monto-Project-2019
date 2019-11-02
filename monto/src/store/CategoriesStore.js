@@ -8,6 +8,10 @@ export class CategoriesStore {
         this.categories = (await Client.get("/api/categories")).json;
     }
 
+    async update(category) {
+        await Client.put(`/api/categories/${category.id}`, category );
+    }
+
     async delete(category) {
         this.categories.splice(this.categories.indexOf(category), 1);
         await Client.delete(`/api/categories/${category.id}`);

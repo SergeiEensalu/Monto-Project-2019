@@ -1,5 +1,6 @@
 package ee.ut.monto.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public final class Transaction {
     @ManyToOne
     private Account account;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     private User user;
 }

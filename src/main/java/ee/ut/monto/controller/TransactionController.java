@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -20,7 +21,12 @@ public final class TransactionController {
 
     @GetMapping("/transactions")
     List<Transaction> getTransactions(Authentication authentication) {
-        return transactionRepository.findAllByUser((User) authentication.getPrincipal());
+        return transactionRepository.findAllByUserOrderByDateDesc((User) authentication.getPrincipal());
+    }
+
+    @GetMapping("/transactions/{id}")
+    Optional<Transaction> getTransactionsById(@PathVariable Long id) {
+        return transactionRepository.findById(id);
     }
 
     @DeleteMapping("/transactions/{id}")
@@ -29,10 +35,19 @@ public final class TransactionController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/transactions/{id}")
+    ResponseEntity<Transaction> updateTransaction(@Valid @RequestBody Transaction transaction, Authentication authentication) {
+        transaction.setUser((User) authentication.getPrincipal());
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        System.out.println(transaction);
+        return ResponseEntity.ok().body(updatedTransaction);
+    }
+
     @PostMapping("/transactions")
     ResponseEntity<Transaction> createTransaction(@Valid @RequestBody Transaction transaction, Authentication authentication) throws URISyntaxException {
         transaction.setUser((User) authentication.getPrincipal());
         Transaction savedTransaction = transactionRepository.save(transaction);
+
         return ResponseEntity.created(new URI("/api/transactions/" + savedTransaction.getId())).body(savedTransaction);
     }
 }
