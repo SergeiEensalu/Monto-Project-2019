@@ -158,15 +158,13 @@ class TransactionView extends React.Component {
               {this.props.transactions.transactions.map(transaction => (
                 <tr key={transaction.id}>
                   <td>
-                    {new Intl.NumberFormat('eu-EE', {
-                      style: 'currency',
-                      currency: 'EUR'
+                    {new Intl.NumberFormat("eu-EE", {
+                      style: "currency",
+                      currency: "EUR"
                     }).format(transaction.sum)}
                   </td>
                   <td>{transaction.description}</td>
-                  <td>
-                    {new Date(transaction.date).toLocaleDateString()}
-                  </td>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
                   <td>
                     {transaction.account
                       ? transaction.account.name
@@ -198,8 +196,8 @@ class TransactionView extends React.Component {
                         this.values.category = this.editableTransaction.category;
                         this.values.account = this.editableTransaction.account;
                       }}
-                      >
-                        Edit
+                    >
+                      Edit
                     </Button>
                   </td>
                 </tr>
@@ -212,7 +210,10 @@ class TransactionView extends React.Component {
             toggle={this.hideModal}
             className={this.props.className}
           >
-            <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
+            <Form
+              onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit}
+              noValidate
+            >
               <ModalHeader toggle={this.hideModal}>
                 {this.getHeader()}
               </ModalHeader>
@@ -300,12 +301,7 @@ class TransactionView extends React.Component {
                 <Button color="primary" type="submit">
                   Save
                 </Button>
-                <Button
-                  color="secondary"
-                  onClick={() =>
-                    this.hideModal()
-                  }
-                >
+                <Button color="secondary" onClick={() => this.hideModal()}>
                   Cancel
                 </Button>
               </ModalFooter>
@@ -324,7 +320,6 @@ class TransactionView extends React.Component {
       .uploadFileToServer(formData)
       .then(response => {
         console.log("File " + file.name + " is uploaded");
-        alert("File uploaded successfully.");
         this.props.transactions.load();
         this.props.categories.load();
         this.props.accounts.load();
@@ -355,7 +350,7 @@ class TransactionView extends React.Component {
   };
 
   getHeader = () => {
-    if (this.addingIncome !== undefined){
+    if (this.addingIncome !== undefined) {
       return this.addingIncome ? "Add income" : "Add expense";
     }
     return "Edit transaction";

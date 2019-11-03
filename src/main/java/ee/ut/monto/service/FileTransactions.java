@@ -121,6 +121,7 @@ public class FileTransactions {
     private void saveTransaction(Date date, String categoryName, String description, Double sum, User user) {
         Category category = new Category();
         category.setName(categoryName);
+        category.setUser(user);
 
         categoryRepository.save(category);
 
