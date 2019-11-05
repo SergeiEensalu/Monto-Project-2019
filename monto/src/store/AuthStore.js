@@ -27,6 +27,7 @@ export class AuthStore {
 
     if (status === 200) {
       this.token = json.token;
+      sessionStorage.setItem("user", email)
     } else {
       return status;
     }
@@ -37,6 +38,7 @@ export class AuthStore {
 
     if (status === 200) {
       this.token = json.token;
+      sessionStorage.setItem("user", email)
     } else {
       return status;
     }
@@ -44,12 +46,30 @@ export class AuthStore {
 
   logout = async () => {
     this.token = null;
+    sessionStorage.removeItem("user")
   }
+
+
+  async update(email, oldPassword, newPassword) {
+    const {id} = await Client.post("/api/users/email", {email});
+
+    const {status} = await Client.put(`/api/users/update/${id}`, {email, oldPassword, newPassword });
+    if (status === 200) {
+    } else {
+      return status;
+    }
+  }
+
+    get sesstionEmail() {
+        return sessionStorage.getItem("user")
+    }
+
 }
 
 decorate(AuthStore, {
   token: observable,
   authenticated: computed,
   login: action,
-  logout: action
+  logout: action,
+  update: action
 });

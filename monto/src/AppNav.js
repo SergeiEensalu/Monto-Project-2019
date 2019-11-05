@@ -24,6 +24,11 @@ class AppNav extends Component {
                     Logout
                   </NavLink>
                 </NavItem>
+                <NavItem>
+                  <NavLink href="/settings">
+                    <img src={"/setting_pic.png"}  height="25" width="25" alt=" "/>
+                  </NavLink>
+                </NavItem>
               </>
             ) : (
               <>

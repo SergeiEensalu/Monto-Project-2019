@@ -35,6 +35,11 @@ export class Client {
     return Client.fetch(url, "POST", body);
   }
 
+  static async put(url, body) {
+    console.log("body" , body)
+    return Client.fetch(url, "PUT", body);
+  }
+
   static async delete(url, body) {
     return Client.fetch(url, "DELETE", body);
   }

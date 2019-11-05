@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import LoginProtected from "./authentication/LoginProtected";
 import Transactions from "./pages/Transactions";
+import Settings from "./pages/UserSettingsPage";
 
 class App extends Component {
   state = {};
@@ -31,6 +32,11 @@ class App extends Component {
             path="/transactions"
             exact={true}
             component={Transactions}
+          />
+          <ProtectedRoute
+              path="/settings"
+              exact={true}
+              component={Settings}
           />
           {/*<ProtectedRoute path="/categories" exact={true} component={CategoriesView} />*/}
           {/*<ProtectedRoute path="/accounts" exact={true} component={AccountsView} />*/}

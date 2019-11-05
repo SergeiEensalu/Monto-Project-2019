@@ -28,6 +28,8 @@ const items = [
   }
 ];
 
+
+
 const Example = () => <UncontrolledCarousel items={items} />;
 
 export default Example;

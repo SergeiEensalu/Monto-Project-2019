@@ -16,6 +16,7 @@ export class AccountsStore {
     async add(name) {
         this.accounts.splice(0, 0, (await Client.post("/api/accounts", { name })).json);
     }
+
 }
 
 decorate(AccountsStore, {
