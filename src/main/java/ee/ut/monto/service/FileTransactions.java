@@ -9,9 +9,11 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.DocFlavor;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,19 +39,25 @@ public class FileTransactions {
             Date date = null;
             String categoryName = "";
             String description = "";
-            Double sum = 0.0;
+            double sum = 0.0;
+            boolean EOF = false;
 
-            int lastRowIndex = sheet.getLastRowNum();
             Iterator rows = sheet.rowIterator();
 
-            while (rows.hasNext()) {
+            while (rows.hasNext() && !EOF) {
                 row = (HSSFRow) rows.next();
                 if (row.getRowNum() == 0 || row.getRowNum() == 1 || row.getRowNum() == 2 || row.getRowNum() == 3
-                        || row.getRowNum() == 4 || row.getRowNum() > lastRowIndex - 2) continue;
+                        || row.getRowNum() == 4) continue;
                 Iterator cells = row.cellIterator();
 
                 while (cells.hasNext()) {
                     cell = (HSSFCell) cells.next();
+                    if (cell.getCellType() == CellType.STRING) {
+                        if (cell.getStringCellValue().contains("closing balance")) {
+                            EOF = true;
+                            break;
+                        }
+                    }
                     switch (cell.getColumnIndex()) {
                         case 1:
                             date = cell.getDateCellValue();
@@ -67,11 +75,9 @@ public class FileTransactions {
                             break;
                     }
                 }
-                //System.out.printf("File uploaded");
-                saveTransaction(date, categoryName, description, sum, user);
+                if (!EOF)
+                    saveTransaction(date, categoryName, description, sum, user);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,18 +92,20 @@ public class FileTransactions {
             Date date = null;
             String categoryName = "";
             String description = "";
-            Double sum = 0.0;
+            double sum = 0.0;
 
             String row;
 
             while ((row = bufferedReader.readLine()) != null) {
                 String[] data = row.split(";");
-                if (!data[3].equals("\"\"\"\"")) {
+                if (!data[3].equals("\"\"") && !data[3].equals("\"\"\"\"")) {
                     date = new SimpleDateFormat("dd/MM/yyyy").parse(data[2].replace("\"", "").replace(".", "/"));
                     categoryName = data[3].replace("\"", "");
                     description = data[4].replace("\"", "");
                     sum = Double.parseDouble(data[5].replace("\"", "").replace(",", "."));
-                    saveTransaction(date, categoryName, description, -sum, user);
+                    if (data[9].equals("\"K\"") || data[9].equals("\"\"K\"\""))
+                        sum = -sum;
+                    saveTransaction(date, categoryName, description, sum, user);
                 }
             }
             bufferedReader.close();
@@ -113,6 +121,7 @@ public class FileTransactions {
     private void saveTransaction(Date date, String categoryName, String description, Double sum, User user) {
         Category category = new Category();
         category.setName(categoryName);
+        category.setUser(user);
 
         categoryRepository.save(category);
 

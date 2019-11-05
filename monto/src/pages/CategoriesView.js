@@ -6,71 +6,85 @@ import {
   FormGroup,
   Input,
   Label,
-  Table
+  Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader
 } from "reactstrap";
 import AppNav from "../AppNav";
-import { Client } from "../util/client";
+import {decorate, observable} from "mobx";
+import {inject, observer} from "mobx-react";
 
 class CategoriesView extends Component {
-  emptyItem = {
+  values = {
     id: 105,
     name: ""
   };
 
-  constructor(props) {
-    super(props);
+  addingCategory = false;
+  isEditing = false;
+  editableCategory = null;
 
-    this.state = {
-      isLoading: true,
-      Categories: [],
-      item: this.emptyItem
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+  componentDidMount() {
+    this.props.categories.load();
   }
 
-  async componentDidMount() {
-    const { json } = await Client.get("/api/categories");
-    this.setState({ Categories: json, isLoading: false });
-  }
-
-  async remove(id) {
-    await Client.delete(`/api/categories/${id}`);
-
-    let updatedCategories = [...this.state.Categories].filter(i => i.id !== id);
-    this.setState({ Categories: updatedCategories });
-  }
-
-  async handleSubmit(event) {
+  handleSubmit = async event => {
     event.preventDefault();
-    await Client.post("/api/categories", this.state.item);
-    window.location.reload();
+    await this.props.categories.add(
+        this.values.name
+    );
+    this.hideModal();
+  };
+
+  handleUpdate = async event => {
+    event.preventDefault();
+
+    this.editableCategory.name = this.values.name;
+
+    await this.props.categories.update(this.editableCategory);
+    this.hideModal();
   }
 
-  handleChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    let item = { ...this.state.item };
-    item[name] = value;
-    this.setState({ item });
-  }
+  handleChange = event => {
+    this.values[event.target.name] = event.target.value;
+  };
+
+  hideModal = () => {
+    this.addingCategory = false;
+    this.isEditing = false;
+
+    this.values.name = "";
+  };
 
   render() {
-    const { Categories, isLoading } = this.state;
-    if (isLoading) return <div>Loading...</div>;
+    if (this.props.categories.categories === undefined) {
+      return <AppNav></AppNav>;
+    }
 
-    let rows = Categories.map(category => (
+    let rows = this.props.categories.categories.map(category => (
       <tr key={category.id}>
         <td>{category.name}</td>
         <td>
           <Button
             size="sm"
             color="danger"
-            onClick={() => this.remove(category.id)}
+            onClick={() => this.props.categories.delete(category)}
           >
             Delete
+          </Button>
+        </td>
+        <td>
+          <Button
+              size="sm"
+              onClick={() => {
+                this.editableCategory = category;
+                this.isEditing = true;
+                this.values.name = this.editableCategory.name;
+              }}
+          >
+            Edit
           </Button>
         </td>
       </tr>
@@ -79,44 +93,87 @@ class CategoriesView extends Component {
     return (
       <div>
         <AppNav />
-        <Container>
-          <h2>Categories</h2>
-          <Form onSubmit={this.handleSubmit}>
-            <FormGroup>
-              <Label for="name">Title</Label>
-              <Input
-                type="text"
-                name="name"
-                id="name"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Button color="primary" type="submit">
-                Save
-              </Button>{" "}
-              <Button color="secondary" onClick={this.props.editCategories}>
-                Cancel
+        <Container style={{width: 400, alignItems: 'center', justifyContent: 'center'}}>
+          <div>
+            <div>
+              <Button
+                  color="success"
+                  size="sm"
+                  icon="plus"
+                  onClick={() => (this.addingCategory = true)}
+              >
+                Add category
               </Button>
-            </FormGroup>
-          </Form>
-        </Container>
-        <Container>
-          <h3>Category List</h3>
+            </div>
+          </div>
           <Table className="mt-4">
             <thead>
               <tr>
                 <th> Category</th>
-                <th width="10%">Action</th>
+                <th width="10%"></th>
+                <th width="10%"></th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>
           </Table>
+          <Modal
+              isOpen={this.addingCategory || this.isEditing}
+              toggle={this.hideModal}
+              className={this.props.className}
+          >
+            <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
+              <ModalHeader toggle={this.hideModal}>
+                {this.isEditing ? "Add new category" : "Edit the category"}
+              </ModalHeader>
+              <ModalBody>
+                <FormGroup>
+                  <Label for="name">Name</Label>
+                  <Input
+                      type="text"
+                      name="name"
+                      id="name"
+                      value={this.values.name}
+                      onChange={this.handleChange}
+                  />
+                </FormGroup>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" type="submit">
+                  Save
+                </Button>
+                <Button
+                    color="secondary"
+                    onClick={() =>
+                        this.hideModal()
+                    }
+                >
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </Form>
+          </Modal>
+          <div>
+            <Button
+                color="success"
+                size="sm"
+                icon="plus"
+                onClick={this.props.editCategories}
+            >
+              Go back
+            </Button>
+          </div>
         </Container>
       </div>
     );
   }
 }
 
-export default CategoriesView;
+decorate(CategoriesView, {
+  addingCategory: observable,
+  isEditing: observable,
+  values: observable
+});
+
+export default inject("categories")(
+    observer(CategoriesView)
+);

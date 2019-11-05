@@ -1,10 +1,12 @@
 package ee.ut.monto.controller;
 
 import ee.ut.monto.model.Category;
+import ee.ut.monto.model.User;
 import ee.ut.monto.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
@@ -19,8 +21,8 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/categories")
-    Collection<Category> categories() {
-        return categoryRepository.findAll();
+    Collection<Category> categories(Authentication authentication) {
+        return categoryRepository.findAllByUser((User) authentication.getPrincipal());
     }
 
     @GetMapping("/categories/{id}")
@@ -31,13 +33,15 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
+    ResponseEntity<Category> createCategory(@Valid @RequestBody Category category, Authentication authentication) throws URISyntaxException {
+        category.setUser((User) authentication.getPrincipal());
         Category savedCategory = categoryRepository.save(category);
         return ResponseEntity.created(new URI("/api/categories" + savedCategory.getId())).body(savedCategory);
     }
 
     @PutMapping("/categories/{id}")
-    ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) {
+    ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category, Authentication authentication) {
+        category.setUser((User) authentication.getPrincipal());
         Category updatedCategory = categoryRepository.save(category);
         return ResponseEntity.ok().body(updatedCategory);
     }

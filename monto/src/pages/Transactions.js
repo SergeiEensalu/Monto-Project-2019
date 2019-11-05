@@ -27,6 +27,8 @@ import "tabler-react/dist/Tabler.css";
 
 class TransactionView extends React.Component {
   addingIncome;
+  isEditing = false;
+  editableTransaction = null;
 
   values = {
     description: "",
@@ -155,9 +157,14 @@ class TransactionView extends React.Component {
             <tbody>
               {this.props.transactions.transactions.map(transaction => (
                 <tr key={transaction.id}>
-                  <td>{transaction.sum}</td>
+                  <td>
+                    {new Intl.NumberFormat("eu-EE", {
+                      style: "currency",
+                      currency: "EUR"
+                    }).format(transaction.sum)}
+                  </td>
                   <td>{transaction.description}</td>
-                  <td>{transaction.date}</td>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
                   <td>
                     {transaction.account
                       ? transaction.account.name
@@ -179,19 +186,36 @@ class TransactionView extends React.Component {
                       Delete
                     </Button>
                   </td>
+                  <td>
+                    <Button
+                      onClick={() => {
+                        this.editableTransaction = transaction;
+                        this.isEditing = true;
+                        this.values.description = this.editableTransaction.description;
+                        this.values.sum = this.editableTransaction.sum;
+                        this.values.category = this.editableTransaction.category;
+                        this.values.account = this.editableTransaction.account;
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
 
           <Modal
-            isOpen={this.addingIncome !== undefined}
+            isOpen={this.addingIncome !== undefined || this.isEditing}
             toggle={this.hideModal}
             className={this.props.className}
           >
-            <Form onSubmit={this.handleSubmit} noValidate>
+            <Form
+              onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit}
+              noValidate
+            >
               <ModalHeader toggle={this.hideModal}>
-                {this.addingIncome ? "Add income" : "Add expense"}
+                {this.getHeader()}
               </ModalHeader>
 
               <ModalBody>
@@ -277,10 +301,7 @@ class TransactionView extends React.Component {
                 <Button color="primary" type="submit">
                   Save
                 </Button>
-                <Button
-                  color="secondary"
-                  onClick={() => (this.addingIncome = undefined)}
-                >
+                <Button color="secondary" onClick={() => this.hideModal()}>
                   Cancel
                 </Button>
               </ModalFooter>
@@ -299,7 +320,6 @@ class TransactionView extends React.Component {
       .uploadFileToServer(formData)
       .then(response => {
         console.log("File " + file.name + " is uploaded");
-        alert("File uploaded successfully.");
         this.props.transactions.load();
         this.props.categories.load();
         this.props.accounts.load();
@@ -319,6 +339,21 @@ class TransactionView extends React.Component {
 
   hideModal = () => {
     this.addingIncome = undefined;
+    this.isEditing = false;
+    this.editableTransaction = null;
+
+    this.values.description = "";
+    this.values.sum = "";
+    this.values.account = null;
+    this.values.category = null;
+    this.values.date = new Date();
+  };
+
+  getHeader = () => {
+    if (this.addingIncome !== undefined) {
+      return this.addingIncome ? "Add income" : "Add expense";
+    }
+    return "Edit transaction";
   };
 
   handleChange = event => {
@@ -335,6 +370,18 @@ class TransactionView extends React.Component {
 
   handleAccountChange = event => {
     this.values.account = this.props.accounts.accounts[event.target.value];
+  };
+
+  handleUpdate = async event => {
+    event.preventDefault();
+
+    this.editableTransaction.description = this.values.description;
+    this.editableTransaction.sum = this.values.sum;
+    this.editableTransaction.account = this.values.account;
+    this.editableTransaction.category = this.values.category;
+
+    await this.props.transactions.update(this.editableTransaction);
+    this.hideModal();
   };
 
   handleSubmit = async event => {
@@ -354,10 +401,12 @@ class TransactionView extends React.Component {
       );
       this.addingIncome = undefined;
     }
+    this.hideModal();
   };
 }
 
 decorate(TransactionView, {
+  isEditing: observable,
   addingIncome: observable,
   values: observable
 });

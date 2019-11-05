@@ -43,4 +43,8 @@ export class Client {
   static async delete(url, body) {
     return Client.fetch(url, "DELETE", body);
   }
+
+  static async put(url, body) {
+    return Client.fetch(url, "PUT", body);
+  }
 }
