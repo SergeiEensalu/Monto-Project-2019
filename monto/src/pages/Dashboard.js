@@ -8,6 +8,7 @@ import 'c3/c3.css';
 
 import AppNav from "../AppNav";
 import { inject, observer } from "mobx-react";
+import CardBody from "reactstrap/es/CardBody";
 
 const toPrettyNumber = number => {
   const negative = number < 0;
@@ -43,6 +44,8 @@ const toPrettyNumber = number => {
 class Dashboard extends React.Component {
   componentDidMount() {
     this.props.transactions.load();
+    this.props.categories.load();
+    this.props.accounts.load();
 
   }
 
@@ -55,6 +58,22 @@ class Dashboard extends React.Component {
 
     const incomeSum = transactions.reduce((sum, transaction) => sum + (transaction.sum > 0 ? transaction.sum : 0), 0);
     const expenseSum = transactions.reduce((sum, transaction) => sum + (transaction.sum < 0 ? -transaction.sum : 0), 0);
+    const names = [];
+    for (const name of this.props.categories.categories)
+      names.push(name);
+    const categoriesNumber = this.props.categories.categories.length;
+    const accountsNumber = this.props.accounts.accounts.length;
+    const categories = this.props.transactions.transactions.map(transaction => transaction.category).filter(category => category)
+    const counter = categories.reduce((counter, category) => {
+      if (!(category.name in counter)) {
+        counter[category.name] = 0
+      }
+      counter[category.name] += 1
+      return counter;
+    }, {});
+    const sorted = Object.entries(counter).sort((entry, other) => other[1] - entry[1]);
+    const topThreeCategoryNames = sorted.map(entry => entry[0]).slice(0, 3);
+
 
     return (
       <>
@@ -75,13 +94,13 @@ class Dashboard extends React.Component {
 
           <Grid.Row>
             <Grid.Col width={4}>
-              <StatsCard layout={1} movement={0} total="27" label="Categories"/>
+              <StatsCard layout={1} movement={0} total={categoriesNumber} label="Number of categories"/>
             </Grid.Col>
             <Grid.Col width={4}>
-              <StatsCard layout={1} movement={0} total="47,8%" label="Average saving proportion"/>
+              <StatsCard layout={1} movement={0} total={incomeSum === 0 ? 0 : Math.round((incomeSum - expenseSum) / incomeSum * 100) + "%"} label="Saving proportion"/>
             </Grid.Col>
             <Grid.Col width={4}>
-              <StatsCard layout={1} movement={0} total="621 €" label="3 most popular categories"/>
+              <StatsCard layout={1} movement={0} total={accountsNumber} label="Number of accounts"/>
             </Grid.Col>
           </Grid.Row>
 
@@ -89,42 +108,9 @@ class Dashboard extends React.Component {
             <Grid.Col width={18} sm={4} lg={6}>
               <Card>
                 <Card.Header>
-                  <Card.Title>Popular Categories</Card.Title>
+                  <Card.Title>Top 3 categories</Card.Title>
                 </Card.Header>
-                <Card.Body>
-                  <C3Chart
-                    style={{height: "16rem"}}
-                    data={{
-                      columns: [
-                        ["data1", 10],
-                        ["data2", 20],
-                        ["data3", 30],
-                        ["data4", 40]
-                      ],
-                      type: "pie",
-                      colors: {
-                        data1: "#00DC6E",
-                        data2: "#c82333",
-                        data3: "#007bff",
-                        data4: "#e08824"
-
-                      },
-                      names: {
-                        data1: "Groceries",
-                        data2: "Rent",
-                        data3: "Gym",
-                        data4: "Clothes"
-                      }
-                    }}
-                    legend={{
-                      show: false
-                    }}
-                    padding={{
-                      bottom: 0,
-                      top: 0
-                    }}
-                  />
-                </Card.Body>
+                  <CardBody> {topThreeCategoryNames.toString()} </CardBody>
               </Card>
             </Grid.Col>
 
@@ -206,6 +192,14 @@ class Dashboard extends React.Component {
                       ],
                       [
                         "data2",
+                        30,
+                        10,
+                        10,
+                        15,
+                        14,
+                        47,
+                        65,
+                        55,
                         0,
                         5,
                         1,
@@ -223,17 +217,20 @@ class Dashboard extends React.Component {
                         2,
                         2,
                         6,
-                        30,
-                        10,
-                        10,
-                        15,
-                        14,
-                        47,
-                        65,
-                        55,
                       ],
                       [
                         "data3",
+                        2,
+                        2,
+                        6,
+                        30,
+                        10,
+                        10,
+                        15,
+                        14,
+                        47,
+                        65,
+                        55,
                         0,
                         5,
                         1,
@@ -248,17 +245,6 @@ class Dashboard extends React.Component {
                         5,
                         6,
                         3,
-                        2,
-                        2,
-                        6,
-                        30,
-                        10,
-                        10,
-                        15,
-                        14,
-                        47,
-                        65,
-                        55,
                       ],
                     ],
                     type: "area", // default type of chart
@@ -327,4 +313,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default inject("transactions")(observer(Dashboard));
+export default inject("transactions", "categories", "accounts")(observer(Dashboard));
