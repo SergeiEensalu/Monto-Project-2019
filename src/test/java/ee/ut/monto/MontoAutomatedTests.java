@@ -5,11 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.*;
+import org.junit.Test;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +21,7 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MontoAutomatedTests {
-
-    WebDriver driver = new FirefoxDriver();
+    WebDriver driver = new ChromeDriver();
     WebDriverWait wait = new WebDriverWait(driver, 10);
     String url = "http://localhost:3000/";
 

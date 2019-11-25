@@ -9,7 +9,6 @@ export class Client {
     if (rootStore.auth.authenticated) {
       headers.append("Authorization", "Bearer " + rootStore.auth.token);
     }
-
     const response = await fetch(url, {
       method,
       headers,
@@ -33,11 +32,6 @@ export class Client {
 
   static async post(url, body) {
     return Client.fetch(url, "POST", body);
-  }
-
-  static async put(url, body) {
-    console.log("body" , body)
-    return Client.fetch(url, "PUT", body);
   }
 
   static async delete(url, body) {

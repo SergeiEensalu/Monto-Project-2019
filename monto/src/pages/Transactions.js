@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import AppNav from "../AppNav";
 import "./Transactions.css";
 import { decorate, observable } from "mobx";
+import Papa from "papaparse";
 import {
   Container,
   Form,
@@ -18,7 +19,7 @@ import {
 import DatePicker from "react-datepicker";
 import CategoriesView from "./CategoriesView";
 import AccountsView from "./AccountsView";
-import { FileService } from "../fileUploading/FileService";
+import BankStatements from "./BankStatements";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -43,11 +44,14 @@ class TransactionView extends React.Component {
 
     this.state = {
       categoriesEdit: false,
-      accountEdit: false
+      accountEdit: false,
+      fileUploading: false,
+      bankStatements: [],
+      fileFormat: null
     };
-    this.fileService = new FileService();
     this.editCategories = this.editCategories.bind(this);
     this.editAccounts = this.editAccounts.bind(this);
+    this.generateBankStatements = this.generateBankStatements.bind(this);
   }
 
   editCategories() {
@@ -66,7 +70,6 @@ class TransactionView extends React.Component {
 
   render() {
     if (this.props.transactions.transactions === undefined) {
-      // If transactions are still being loaded
       return <AppNav></AppNav>;
     }
 
@@ -82,6 +85,17 @@ class TransactionView extends React.Component {
       return (
         <div>
           <AccountsView editAccounts={this.editAccounts} />
+        </div>
+      );
+    }
+
+    if (this.state.fileUploading) {
+      return (
+        <div>
+          <BankStatements
+            bankStatements={this.state.bankStatements}
+            fileFormat={this.state.fileFormat}
+          />
         </div>
       );
     }
@@ -139,7 +153,7 @@ class TransactionView extends React.Component {
                 icon="upload"
               >
                 Upload file
-                <input type="file" onChange={this.handleUploadFile} />
+                <input type="file" onChange={this.handleFileUpload} />
               </Button>
             </div>
           </div>
@@ -312,30 +326,31 @@ class TransactionView extends React.Component {
     );
   }
 
-  handleUploadFile = event => {
-    const formData = new FormData();
+  handleFileUpload = event => {
     let file = event.target.files[0];
-    formData.append("file", file);
-    this.fileService
-      .uploadFileToServer(formData)
-      .then(response => {
-        console.log("File " + file.name + " is uploaded");
-        this.props.transactions.load();
-        this.props.categories.load();
-        this.props.accounts.load();
-      })
-      .catch(function(error) {
-        console.log(error);
-        if (error.response) {
-          console.log(
-            "Upload error. HTTP error/status code=",
-            error.response.status
-          );
-        } else {
-          console.log("Upload error. HTTP error/status code=", error.message);
-        }
+    if (file.name.endsWith(".csv")) {
+      Papa.parse(file, {
+        complete: this.generateBankStatements,
+        header: true
       });
+    }
   };
+
+  generateBankStatements(result) {
+    let bankStatements = result.data;
+    if (bankStatements[0].Selgitus === "Algsaldo") {
+      bankStatements.shift();
+    }
+    if (bankStatements[bankStatements.length - 1].Selgitus === "lõppsaldo") {
+      bankStatements.pop();
+    }
+    if (bankStatements[bankStatements.length - 1].Selgitus === "Käive") {
+      bankStatements.pop();
+    }
+    this.setState({ fileFormat: "CSV" });
+    this.setState({ bankStatements: bankStatements });
+    this.setState({ fileUploading: true });
+  }
 
   hideModal = () => {
     this.addingIncome = undefined;
@@ -411,6 +426,8 @@ decorate(TransactionView, {
   values: observable
 });
 
-export default inject("transactions", "categories", "accounts")(
-  observer(TransactionView)
-);
+export default inject(
+  "transactions",
+  "categories",
+  "accounts"
+)(observer(TransactionView));

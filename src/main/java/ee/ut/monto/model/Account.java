@@ -17,7 +17,7 @@ public class Account {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column()
     private String type; // personal or business? might need changing
 
     @JsonIgnore

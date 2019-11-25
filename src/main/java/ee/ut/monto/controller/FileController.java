@@ -8,7 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URISyntaxException;
 
 @CrossOrigin("*")
 @Controller
@@ -21,13 +22,10 @@ public class FileController {
     public FileTransactions fileTransactions() {
         return new FileTransactions();
     }
-    @PostMapping("/fileUploading")
-    public ResponseEntity handleFileUpload(@RequestParam("file") MultipartFile multipartFile, Authentication authentication) {
-        if (multipartFile.getOriginalFilename().endsWith(".xls")) {
-            fileTransactions.saveXLSFileTransactions(multipartFile, (User) authentication.getPrincipal());
-        } else {
-            fileTransactions.saveCSVFileTransactions(multipartFile, (User) authentication.getPrincipal());
-        }
+
+    @PostMapping("/bankStatements")
+    ResponseEntity saveBankStatements(@RequestBody String[][] body, Authentication authentication) throws URISyntaxException {
+        fileTransactions.saveCSVFileBankStatements(body, (User) authentication.getPrincipal());
         return ResponseEntity.ok().build();
     }
 }
