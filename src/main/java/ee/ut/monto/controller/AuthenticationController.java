@@ -71,7 +71,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     ResponseEntity<TokenDto> register(@Valid @RequestBody RegisterDto registerDto) throws UnexpectedTypeException {
-        System.out.println(registerDto.email);
 
         if (userRepository.findByEmail(registerDto.email).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

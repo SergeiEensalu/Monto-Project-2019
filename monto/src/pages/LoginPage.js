@@ -59,6 +59,9 @@ class LoginPage extends React.Component {
       this.emailError = "Entered credentials are invalid.";
       this.passwordError = "Entered credentials are invalid.";
     }
+    else {
+      sessionStorage.setItem("user", this.email)
+    }
   };
 }
 

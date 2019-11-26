@@ -30,16 +30,44 @@ public class UserController {
     @PostMapping("/email")
     Long findUserId(@Valid @RequestBody UserDto userDto) {
         Optional<User> users = userRepository.findByEmail(userDto.email);
-        if (!users.isPresent()) {
-            return null;
-        }
-        return users.get().getId();
+        Long id = users.map(User::getId).orElse(null);
+        return id;
     }
 
-    @PutMapping("/update/{id}")
-    ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
+    @DeleteMapping("/delete/{id}")
+    ResponseEntity<?> delete(@Valid @RequestBody UserDto userDto) {
+        Optional<User> users = userRepository.findByEmail(userDto.email);
+        userRepository.deleteById(users.get().getId());
+        return ResponseEntity.ok().build();
+
+    }
+
+    @PutMapping("/updateUsername/{id}")
+    ResponseEntity<?> updateUsername(@Valid @RequestBody UserDto userDto) {
         Optional<User> users = userRepository.findByEmail(userDto.email);
 
+        if (!users.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<User> usersList = userRepository.findByEmail(userDto.newEmail);
+        if(usersList.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = users.get();
+
+        user.setEmail(userDto.getNewEmail());
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok().body(updatedUser);
+    }
+
+
+
+
+        @PutMapping("/update/{id}")
+    ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
+        Optional<User> users = userRepository.findByEmail(userDto.email);
         if (!users.isPresent()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -64,6 +92,9 @@ public class UserController {
     private static class UserDto {
         @Email
         private String email;
+
+        @Email
+        private String newEmail;
 
         @Length(min = 8)
         private String oldPassword;
