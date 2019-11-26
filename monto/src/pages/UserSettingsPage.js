@@ -1,6 +1,18 @@
 import React from "react";
 import AppNav from "../AppNav";
-import {Button, Container, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {
+    Button,
+    Container,
+    Form,
+    FormGroup,
+    FormText,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
+} from "reactstrap";
 import {inject, observer} from "mobx-react";
 
 class UserSettingsPage extends React.Component {
@@ -22,7 +34,15 @@ class UserSettingsPage extends React.Component {
             repeatedPasswordError: false,
 
             repeatedPassword2: "",
-            repeatedPasswordError2: false
+            repeatedPasswordError2: false,
+
+            deleteUser: false,
+            changeUsername: false,
+
+            username: undefined,
+            new_username: undefined,
+            changeUsernameError: undefined,
+            changeNewUsernameError: undefined
         };
     }
 
@@ -38,8 +58,22 @@ class UserSettingsPage extends React.Component {
     hideModal = () => {
         this.setState({
             changePassword: undefined
-        })
+        });
         this.clearValues();
+    };
+
+    hideModalDeleteUser = () => {
+        this.setState({
+            deleteUser: false
+        });
+        this.clearValues();
+    };
+
+    hideModalChangeUsername = () => {
+        this.setState({
+            changeUsername: false
+        });
+        this.clearChangeUsernameValues();
     };
 
     clearValues = () => {
@@ -53,7 +87,32 @@ class UserSettingsPage extends React.Component {
             repeatedPassword2: "",
             repeatedPasswordError2: false
         })
-    }
+    };
+
+    clearChangeUsernameValues = () => {
+        this.setState({
+            username: undefined,
+            new_username: undefined,
+            changeUsernameError: undefined,
+            changeNewUsernameError: undefined,
+            changeUsername: false
+        })
+    };
+
+    handleDeleteSubmit = async event => {
+        event.preventDefault();
+
+        const status = await this.props.auth.delete(this.props.auth.sesstionEmail);
+        if (status === undefined) {
+            alert("Something went wrong")
+        } else {
+            this.setState({
+                deleteUser: false,
+            });
+            this.props.auth.logout()
+        }
+    };
+
 
     handleSubmit = async event => {
 
@@ -115,6 +174,52 @@ class UserSettingsPage extends React.Component {
 
     };
 
+    handleChangeUsernameSubmit = async event => {
+        event.preventDefault();
+
+        this.setState({
+            changeUsernameError: undefined,
+            changeNewUsernameError: undefined
+        });
+
+        var email = this.props.auth.sesstionEmail;
+
+
+        if (this.state.username !== email) {
+            this.setState({
+                changeUsernameError: "Wrong username",
+            });
+            return
+        }
+        if (this.state.username === undefined) {
+            this.setState({
+                changeUsernameError: "Please enter an old email"
+            });
+            return
+        }
+        if (this.state.new_username === undefined) {
+            this.setState({
+                changeNewUsernameError: "Please enter an new email"
+            });
+            return
+        }
+
+        const status = await this.props.auth.changeUsername(this.state.username, this.state.new_username);
+
+        if (status !== undefined) {
+            if (status === 401)
+                alert("New email already exist");
+            else
+                alert("Something went wrong");
+            this.clearChangeUsernameValues();
+            return;
+        }
+
+        this.props.auth.setSessionEmail(this.state.new_username);
+        this.hideModalChangeUsername();
+        alert("Username changed")
+    };
+
 
     render() {
         return (
@@ -144,9 +249,23 @@ class UserSettingsPage extends React.Component {
                             <Button
                                 size="sm"
                                 icon="plus"
-                                // onClick={() => this.setState({changePassword: true})}
+                                onClick={() => this.setState({changeUsername: true})}
                             >
                                 change username
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="wrapper">
+                        <div>
+                            <h4>Account</h4>
+                        </div>
+                        <div>
+                            <Button
+                                size="sm"
+                                icon="plus"
+                                onClick={() => this.setState({deleteUser: true})}
+                            >
+                                delete user
                             </Button>
                         </div>
                     </div>
@@ -198,6 +317,64 @@ class UserSettingsPage extends React.Component {
 
                             <Button color="primary" block>Change password</Button>
 
+                        </Form>
+                    </ModalBody>
+                </Modal>
+                <Modal
+                    isOpen={this.state.deleteUser === true}
+                    className={this.props.className}
+                >
+                    <ModalHeader toggle={this.hideModalDeleteUser}>
+                        Delete user
+                    </ModalHeader>
+
+                    <ModalBody onSubmit={this.handleDeleteSubmit}>
+                        <Form>
+
+                            <FormText color="danger">Are you sure that your want to delete a user?</FormText>
+                            <FormText color="danger">It is unpossible to recover an user</FormText>
+
+                            <ModalFooter>
+                                <Button color="red" type="submit"> Delete user </Button>
+                                <Button color="secondary" onClick={() => this.hideModalDeleteUser()}>
+                                    Cancel
+                                </Button>
+                            </ModalFooter>
+                        </Form>
+
+                    </ModalBody>
+                </Modal>
+                <Modal
+                    isOpen={this.state.changeUsername === true}
+                    className={this.props.className}
+                    toggle={this.hideModalChangeUsername}
+                >
+                    <ModalHeader toggle={this.hideModalChangeUsername}>
+                        Change username
+                    </ModalHeader>
+
+                    <ModalBody onSubmit={this.handleChangeUsernameSubmit}>
+
+                        <Form>
+                            <FormGroup>
+                                {this.state.changeUsernameError &&
+                                <FormText color="danger">{this.state.changeUsernameError}</FormText>}
+                                <Label for="username">Old username</Label>
+                                <Input type="email" name="username" id="username" placeholder="username"
+                                       value={this.state.username}
+                                       onChange={this.handleChange}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                {this.state.changeNewUsernameError &&
+                                <FormText color="danger">{this.state.changeNewUsernameError}</FormText>}
+                                <Label for="new_username">New username</Label>
+                                <Input type="email" name="new_username" id="new_username" placeholder="new username"
+                                       value={this.state.new_username}
+                                       onChange={this.handleChange}
+                                />
+                            </FormGroup>
+                            <Button color="primary" block>Change username</Button>
                         </Form>
                     </ModalBody>
                 </Modal>
