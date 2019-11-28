@@ -15,6 +15,7 @@ import {
 import AppNav from "../AppNav";
 import {decorate, observable} from "mobx";
 import {inject, observer} from "mobx-react";
+import RegrulesView from "./RegrulesView";
 
 class CategoriesView extends Component {
   values = {
@@ -25,6 +26,15 @@ class CategoriesView extends Component {
   addingCategory = false;
   isEditing = false;
   editableCategory = null;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      regrulesEdit: false
+    };
+    this.editRegrules = this.editRegrules.bind(this);
+  }
 
   componentDidMount() {
     this.props.categories.load();
@@ -58,9 +68,21 @@ class CategoriesView extends Component {
     this.values.name = "";
   };
 
+  editRegrules() {
+    this.setState({ regrulesEdit: !this.state.regrulesEdit });
+  }
+
   render() {
     if (this.props.categories.categories === undefined) {
       return <AppNav></AppNav>;
+    }
+
+    if (this.state.regrulesEdit) {
+      return (
+          <div>
+            <RegrulesView editRegrules={this.editRegrules} />
+          </div>
+      );
     }
 
     let rows = this.props.categories.categories.map(category => (
@@ -103,6 +125,13 @@ class CategoriesView extends Component {
                   onClick={() => (this.addingCategory = true)}
               >
                 Add category
+              </Button>
+              <Button
+                  size="sm"
+                  color="danger"
+                  onClick={() => this.editRegrules()}
+              >
+                Edit rules
               </Button>
             </div>
           </div>

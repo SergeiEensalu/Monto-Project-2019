@@ -18,20 +18,20 @@ public class RegruleController {
     @Autowired
     private RegruleRepository regruleRepository;
 
-    @GetMapping("/autcategorizations")
+    @GetMapping("/regrules")
     Collection<Regrule> getRegrules(Authentication authentication) {
         return regruleRepository.findAllByUser((User) authentication.getPrincipal());
     }
 
-    @PostMapping("/autcategorizations")
+    @PostMapping("/regrules")
     ResponseEntity<Regrule> createRegrule(@Valid @RequestBody Regrule regrule,
                                                               Authentication authentication) throws URISyntaxException {
         regrule.setUser((User) authentication.getPrincipal());
         Regrule savedRegrule = regruleRepository.save(regrule);
-        return ResponseEntity.created(new URI("/api/autcategorizations" + savedRegrule.getId())).body(savedRegrule);
+        return ResponseEntity.created(new URI("/api/regrules" + savedRegrule.getId())).body(savedRegrule);
     }
 
-    @PutMapping("/autcategorizations/{id}")
+    @PutMapping("/regrules/{id}")
     ResponseEntity<Regrule> updateRegrule(@Valid @RequestBody Regrule regrule,
                                                               Authentication authentication) {
         regrule.setUser((User) authentication.getPrincipal());
@@ -39,7 +39,7 @@ public class RegruleController {
         return ResponseEntity.ok().body(updatedRegrule);
     }
 
-    @DeleteMapping("/autcategorizations/{id}")
+    @DeleteMapping("/regrules/{id}")
     ResponseEntity<?> deleteRegrule(@PathVariable Long id) {
         regruleRepository.deleteById(id);
         return ResponseEntity.ok().build();

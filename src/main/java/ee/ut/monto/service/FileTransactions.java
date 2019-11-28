@@ -1,24 +1,25 @@
 package ee.ut.monto.service;
 
-import ee.ut.monto.model.Category;
-import ee.ut.monto.model.Transaction;
-import ee.ut.monto.model.User;
-import ee.ut.monto.model.Account;
+import ee.ut.monto.model.*;
 import ee.ut.monto.repository.AccountRepository;
 import ee.ut.monto.repository.CategoryRepository;
+import ee.ut.monto.repository.RegruleRepository;
 import ee.ut.monto.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileTransactions {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private RegruleRepository regruleRepository;
 
     public void saveCSVFileBankStatements(String[][] bankStatements, User user) {
         try {
@@ -40,11 +41,15 @@ public class FileTransactions {
     }
 
     private void saveBankStatement(Date date, String categoryName, String description, Double sum, User user, String accountName) {
-        Category category = new Category();
-        category.setName(categoryName);
-        category.setUser(user);
+        Category category = null;
+        List<Regrule> regrules = regruleRepository.findAllByUser(user);
+        for (Regrule rule: regrules) {
+            String patternString = ".*"+rule.getReg()+".*";
+            Pattern pattern = Pattern.compile(patternString);
+            Matcher matcher = pattern.matcher(categoryName);
+            if (matcher.matches()) category = rule.getCategory();
+        }
 
-        categoryRepository.save(category);
         Account account = accountRepository.findByName(accountName);
 
         Transaction transaction = new Transaction();

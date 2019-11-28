@@ -30,6 +30,8 @@ class RegrulesView extends Component {
     componentDidMount() {
         this.props.regrules.load();
         this.props.categories.load();
+        // console.log(this.props.regrules.regrules)
+        // console.log(this.props.regrules)
     }
 
     handleSubmit = async event => {
@@ -72,10 +74,21 @@ class RegrulesView extends Component {
             return <AppNav></AppNav>;
         }
 
+        let categoryList = this.props.categories.categories.map(category => (
+            <option
+                value={this.props.categories.categories.indexOf(category)}
+                key={category.id}
+            >
+                {category.name}
+            </option>
+        ));
+
         let rows = this.props.regrules.regrules.map(regrule => (
             <tr key={regrule.id}>
                 <td>{regrule.reg}</td>
-                <td>{regrule.category}</td>
+                <td>{regrule.category
+                    ? regrule.category.name
+                    : "No category"}</td>
                 <td>
                     <Button
                         size="sm"
@@ -91,8 +104,8 @@ class RegrulesView extends Component {
                         onClick={() => {
                             this.editableRegrule = regrule;
                             this.isEditing = true;
-                            this.values.name = this.editableRegrule.reg;
-                            this.values.type = this.editableRegrule.category;
+                            this.values.reg = this.editableRegrule.reg;
+                            this.values.category = this.editableRegrule.category;
                         }}
                     >
                         Edit
@@ -104,7 +117,7 @@ class RegrulesView extends Component {
         return (
             <div>
                 <AppNav />
-                <Container style={{width: 600, alignItems: 'center', justifyContent: 'center'}}>
+                <Container style={{width: 800, alignItems: 'center', justifyContent: 'center'}}>
                     <div>
                         <div>
                             <Button
@@ -121,7 +134,7 @@ class RegrulesView extends Component {
                         <thead>
                         <tr>
                             <th> Regrule</th>
-                            <th> Type</th>
+                            <th> Category</th>
                             <th width="10%"></th>
                             <th width="10%"></th>
                         </tr>
@@ -139,24 +152,28 @@ class RegrulesView extends Component {
                             </ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label for="name">Name</Label>
+                                    <Label for="reg">Name</Label>
                                     <Input
                                         type="text"
-                                        name="name"
-                                        id="name"
-                                        value={this.values.name}
+                                        name="reg"
+                                        id="reg"
+                                        value={this.values.reg}
                                         onChange={this.handleChange}
                                     />
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="type">Type</Label>
-                                    <Input
-                                        type="text"
-                                        name="type"
-                                        id="type"
-                                        value={this.values.type}
-                                        onChange={this.handleChange}
-                                    />
+                                    <Label for="category">Category</Label>
+                                    <div className="select-row">
+                                        <select
+                                            onChange={this.handleCategoryChange}
+                                            className="form-control"
+                                        >
+                                            <option selected value={-1}>
+                                                No category
+                                            </option>
+                                            {categoryList}
+                                        </select>
+                                    </div>
                                 </FormGroup>
                             </ModalBody>
                             <ModalFooter>

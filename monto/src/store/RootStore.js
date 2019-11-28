@@ -2,6 +2,7 @@ import { AuthStore } from "./AuthStore";
 import { TransactionsStore } from "./TransactionsStore";
 import { CategoriesStore } from "./CategoriesStore";
 import { AccountsStore } from "./AccountsStore";
+import {RegrulesStore} from "./RegrulesStore";
 
 export class RootStore {
   constructor() {
@@ -9,6 +10,7 @@ export class RootStore {
     this.transactions = new TransactionsStore();
     this.categories = new CategoriesStore();
     this.accounts = new AccountsStore();
+    this.regrules = new RegrulesStore();
   }
 }
 
