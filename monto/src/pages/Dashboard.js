@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Card, Grid, Page, StatsCard } from "tabler-react";
+import { Card, Grid, Page, StatsCard, Table } from "tabler-react";
 import "tabler-react/dist/Tabler.css";
 
 import C3Chart from "react-c3js";
@@ -58,6 +58,7 @@ class Dashboard extends React.Component {
 
     const incomeSum = transactions.reduce((sum, transaction) => sum + (transaction.sum > 0 ? transaction.sum : 0), 0);
     const expenseSum = transactions.reduce((sum, transaction) => sum + (transaction.sum < 0 ? -transaction.sum : 0), 0);
+
     const names = [];
     for (const name of this.props.categories.categories)
       names.push(name);
@@ -73,7 +74,18 @@ class Dashboard extends React.Component {
     }, {});
     const sorted = Object.entries(counter).sort((entry, other) => other[1] - entry[1]);
     const topThreeCategoryNames = sorted.map(entry => entry[0]).slice(0, 3);
+    const topTenCategories = sorted.map(entry => entry[0].slice(0,10));
 
+    const accounts = this.props.transactions.transactions.map(transaction => transaction.account).filter(account => account)
+    const accountCounter = accounts.reduce((accountCounter, account) => {
+      if (!(account.name in accountCounter)) {
+        accountCounter[account.name] = 0
+      }
+      accountCounter[account.name] += 1
+      return accountCounter;
+    }, {});
+    const sortedAccounts = Object.entries(accountCounter).sort((entry, other) => other[1] - entry[1]);
+    const topTenAccounts = sortedAccounts.map(entry => entry[0].slice(0,10));
 
     return (
       <>
@@ -154,156 +166,29 @@ class Dashboard extends React.Component {
             <Grid.Col lg={12}>
               <Card>
                 <Card.Header>
-                  <Card.Title>Transactions Overview</Card.Title>
+                  <Card.Title>Accounts</Card.Title>
                 </Card.Header>
-
-                <C3Chart
-                  style={{height: "16rem"}}
-                  data={{
-                    columns: [
-                      // each columns data
-                      [
-                        "data1",
-                        0,
-                        5,
-                        1,
-                        2,
-                        7,
-                        5,
-                        6,
-                        8,
-                        24,
-                        7,
-                        12,
-                        5,
-                        6,
-                        3,
-                        2,
-                        2,
-                        6,
-                        30,
-                        10,
-                        10,
-                        15,
-                        14,
-                        47,
-                        65,
-                        55,
-                      ],
-                      [
-                        "data2",
-                        30,
-                        10,
-                        10,
-                        15,
-                        14,
-                        47,
-                        65,
-                        55,
-                        0,
-                        5,
-                        1,
-                        2,
-                        7,
-                        5,
-                        6,
-                        8,
-                        24,
-                        7,
-                        12,
-                        5,
-                        6,
-                        3,
-                        2,
-                        2,
-                        6,
-                      ],
-                      [
-                        "data3",
-                        2,
-                        2,
-                        6,
-                        30,
-                        10,
-                        10,
-                        15,
-                        14,
-                        47,
-                        65,
-                        55,
-                        0,
-                        5,
-                        1,
-                        2,
-                        7,
-                        5,
-                        6,
-                        8,
-                        24,
-                        7,
-                        12,
-                        5,
-                        6,
-                        3,
-                      ],
-                    ],
-                    type: "area", // default type of chart
-                    groups: [["data1", "data2", "data3"]],
-                    colors: {
-                      data1: "#00DC6E",
-                      data2: "#c82333",
-                      data3: "#007bff"
-                    },
-                    names: {
-                      data1: "Incomes",
-                      data2: "Expenses",
-                      data3: "Savings"
-                    }
-                  }}
-                  axis={{
-                    y: {
-                      padding: {
-                        bottom: 0
-                      },
-                      show: false,
-                      tick: {
-                        outer: false
-                      }
-                    },
-                    x: {
-                      padding: {
-                        left: 0,
-                        right: 0
-                      },
-                      show: false
-                    }
-                  }}
-                  legend={{
-                    position: "inset",
-                    padding: 0,
-                    inset: {
-                      anchor: "top-left",
-                      x: 20,
-                      y: 8,
-                      step: 10
-                    }
-                  }}
-                  tooltip={{
-                    format: {
-                      title: function (x) {
-                        return "";
-                      }
-                    }
-                  }}
-                  padding={{
-                    bottom: 0,
-                    left: -1,
-                    right: -1
-                  }}
-                  point={{
-                    show: false
-                  }}
-                />
+                <Table>
+                  <Table.Header>
+                    <Table.ColHeader>Name</Table.ColHeader>
+                  </Table.Header>
+                  <Table.Body>
+                      {topTenAccounts.map(account => <Table.Row key={account}><Table.Col>{account}</Table.Col></Table.Row>)}
+                  </Table.Body>
+                </Table>
+              </Card>
+              <Card>
+                <Card.Header>
+                  <Card.Title>Categories</Card.Title>
+                </Card.Header>
+                <Table>
+                  <Table.Header>
+                    <Table.ColHeader>Name</Table.ColHeader>
+                  </Table.Header>
+                    <Table.Body>
+                      {topTenCategories.map(category => <Table.Row key={category}><Table.Col>{category}</Table.Col></Table.Row>)}
+                  </Table.Body>
+                </Table>
               </Card>
             </Grid.Col>
           </Grid.Row>
