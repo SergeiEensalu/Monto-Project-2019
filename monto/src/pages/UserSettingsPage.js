@@ -226,7 +226,7 @@ class UserSettingsPage extends React.Component {
             <>
                 <AppNav/>
                 <Container className="col-md-4 mt-5">
-                    <h1 className="wrapper"> User settings page </h1>
+                    <h1 className="wrapper"> User settings </h1>
                     <div className="wrapper">
                         <div>
                             <h4>Password</h4>
@@ -286,7 +286,7 @@ class UserSettingsPage extends React.Component {
 
                             <FormGroup>
                                 <Label for="password">Password</Label>
-                                <Input type="password" name="password" id="password" placeholder="password"
+                                <Input type="password" name="password" id="password" placeholder="Password"
                                        value={this.state.password}
                                        onChange={this.handleChange}
                                 />
@@ -296,7 +296,7 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 <Label for="repeatedPassword">New password</Label>
                                 <Input type="password" name="repeatedPassword" id="repeatedPassword"
-                                       placeholder="new password"
+                                       placeholder="New password"
                                        value={this.state.repeatedPassword}
                                        onChange={this.handleChange}
                                 />
@@ -307,7 +307,7 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 <Label for="repeatedPassword2">Repeat new password</Label>
                                 <Input type="password" name="repeatedPassword2" id="repeatedPassword2"
-                                       placeholder="repeat new password"
+                                       placeholder="Repeat new password"
                                        value={this.state.repeatedPassword2}
                                        onChange={this.handleChange}
                                 />
@@ -350,7 +350,7 @@ class UserSettingsPage extends React.Component {
                     toggle={this.hideModalChangeUsername}
                 >
                     <ModalHeader toggle={this.hideModalChangeUsername}>
-                        Change email
+                        Change email address
                     </ModalHeader>
 
                     <ModalBody onSubmit={this.handleChangeUsernameSubmit}>
@@ -359,8 +359,8 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 {this.state.changeUsernameError &&
                                 <FormText color="danger">{this.state.changeUsernameError}</FormText>}
-                                <Label for="username">Old email</Label>
-                                <Input type="email" name="username" id="username" placeholder="username"
+                                <Label for="username">Old email address</Label>
+                                <Input type="email" name="username" id="username" placeholder="Old email address"
                                        value={this.state.username}
                                        onChange={this.handleChange}
                                 />
@@ -368,13 +368,13 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 {this.state.changeNewUsernameError &&
                                 <FormText color="danger">{this.state.changeNewUsernameError}</FormText>}
-                                <Label for="new_username">New email</Label>
-                                <Input type="email" name="new_username" id="new_username" placeholder="new username"
+                                <Label for="new_username">New email address</Label>
+                                <Input type="email" name="new_username" id="new_username" placeholder="New email address"
                                        value={this.state.new_username}
                                        onChange={this.handleChange}
                                 />
                             </FormGroup>
-                            <Button color="primary" block>Change email</Button>
+                            <Button color="primary" block>Change email address</Button>
                         </Form>
                     </ModalBody>
                 </Modal>
