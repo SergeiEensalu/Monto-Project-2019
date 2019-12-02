@@ -141,13 +141,13 @@ class UserSettingsPage extends React.Component {
 
         if (this.state.repeatedPassword !== this.state.repeatedPassword2) {
             this.setState({
-                repeatedPasswordError: "Entered passwords do not match.",
+                repeatedPasswordError: "Entered passwords do not match",
             });
             return;
         }
         if ((this.state.password === this.state.repeatedPassword)) {
             this.setState({
-                passwordError: "Old password the same as new password",
+                passwordError: "Old password is the same as new password",
             });
             return;
         }
@@ -160,7 +160,7 @@ class UserSettingsPage extends React.Component {
 
         if (status !== undefined) {
             this.setState({
-                passwordError: "Entered credentials are invalid.",
+                passwordError: "Entered credentials are invalid",
 
             });
         } else {
@@ -168,7 +168,7 @@ class UserSettingsPage extends React.Component {
                 changePassword: undefined,
             });
             setTimeout(() => {
-                alert("Password changed successfully.")
+                alert("Password changed successfully")
             }, 10);
         }
 
@@ -187,19 +187,19 @@ class UserSettingsPage extends React.Component {
 
         if (this.state.username !== email) {
             this.setState({
-                changeUsernameError: "Wrong username",
+                changeUsernameError: "Wrong email",
             });
             return
         }
         if (this.state.username === undefined) {
             this.setState({
-                changeUsernameError: "Please enter an old email"
+                changeUsernameError: "Please enter old email address"
             });
             return
         }
         if (this.state.new_username === undefined) {
             this.setState({
-                changeNewUsernameError: "Please enter an new email"
+                changeNewUsernameError: "Please enter new email address"
             });
             return
         }
@@ -208,7 +208,7 @@ class UserSettingsPage extends React.Component {
 
         if (status !== undefined) {
             if (status === 401)
-                alert("New email already exist");
+                alert("New email already exists");
             else
                 alert("Something went wrong");
             this.clearChangeUsernameValues();
@@ -237,13 +237,13 @@ class UserSettingsPage extends React.Component {
                                 icon="plus"
                                 onClick={() => this.setState({changePassword: true})}
                             >
-                                change password
+                                Change password
                             </Button>
                         </div>
                     </div>
                     <div className="wrapper">
                         <div>
-                            <h4>Username</h4>
+                            <h4>Email</h4>
                         </div>
                         <div>
                             <Button
@@ -251,13 +251,13 @@ class UserSettingsPage extends React.Component {
                                 icon="plus"
                                 onClick={() => this.setState({changeUsername: true})}
                             >
-                                change username
+                                Change email
                             </Button>
                         </div>
                     </div>
                     <div className="wrapper">
                         <div>
-                            <h4>Account</h4>
+                            <h4>User</h4>
                         </div>
                         <div>
                             <Button
@@ -265,7 +265,7 @@ class UserSettingsPage extends React.Component {
                                 icon="plus"
                                 onClick={() => this.setState({deleteUser: true})}
                             >
-                                delete user
+                                Delete user
                             </Button>
                         </div>
                     </div>
@@ -294,7 +294,7 @@ class UserSettingsPage extends React.Component {
                             </FormGroup>
 
                             <FormGroup>
-                                <Label for="repeatedPassword">new password</Label>
+                                <Label for="repeatedPassword">New password</Label>
                                 <Input type="password" name="repeatedPassword" id="repeatedPassword"
                                        placeholder="new password"
                                        value={this.state.repeatedPassword}
@@ -331,8 +331,8 @@ class UserSettingsPage extends React.Component {
                     <ModalBody onSubmit={this.handleDeleteSubmit}>
                         <Form>
 
-                            <FormText color="danger">Are you sure that your want to delete a user?</FormText>
-                            <FormText color="danger">It is unpossible to recover an user</FormText>
+                            <FormText color="danger">Are you sure that your want to delete your user?</FormText>
+                            <FormText color="danger">It is impossible to recover your user</FormText>
 
                             <ModalFooter>
                                 <Button color="red" type="submit"> Delete user </Button>
@@ -350,7 +350,7 @@ class UserSettingsPage extends React.Component {
                     toggle={this.hideModalChangeUsername}
                 >
                     <ModalHeader toggle={this.hideModalChangeUsername}>
-                        Change username
+                        Change email
                     </ModalHeader>
 
                     <ModalBody onSubmit={this.handleChangeUsernameSubmit}>
@@ -359,7 +359,7 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 {this.state.changeUsernameError &&
                                 <FormText color="danger">{this.state.changeUsernameError}</FormText>}
-                                <Label for="username">Old username</Label>
+                                <Label for="username">Old email</Label>
                                 <Input type="email" name="username" id="username" placeholder="username"
                                        value={this.state.username}
                                        onChange={this.handleChange}
@@ -368,13 +368,13 @@ class UserSettingsPage extends React.Component {
                             <FormGroup>
                                 {this.state.changeNewUsernameError &&
                                 <FormText color="danger">{this.state.changeNewUsernameError}</FormText>}
-                                <Label for="new_username">New username</Label>
+                                <Label for="new_username">New email</Label>
                                 <Input type="email" name="new_username" id="new_username" placeholder="new username"
                                        value={this.state.new_username}
                                        onChange={this.handleChange}
                                 />
                             </FormGroup>
-                            <Button color="primary" block>Change username</Button>
+                            <Button color="primary" block>Change email</Button>
                         </Form>
                     </ModalBody>
                 </Modal>
