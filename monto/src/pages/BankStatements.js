@@ -36,13 +36,13 @@ class BankStatements extends Component {
   };
 
   getCellType(initialCellType) {
-    if (initialCellType === "Kuupäev") {
+    if (initialCellType === "Kuupäev" || initialCellType === "Date") {
       return "Date";
-    } else if (initialCellType === "Saaja/Maksja") {
+    } else if (initialCellType === "Saaja/Maksja" || initialCellType === "Beneficiary/Payer") {
       return "Category";
-    } else if (initialCellType === "Selgitus") {
+    } else if (initialCellType === "Selgitus" || initialCellType === "Details") {
       return "Description";
-    } else if (initialCellType === "Summa") {
+    } else if (initialCellType === "Summa" || initialCellType === "Amount") {
       return "Sum";
     } else {
       return "Type not specified";
@@ -101,7 +101,13 @@ class BankStatements extends Component {
       return <Transactions />;
     }
     if (this.state.statementTypesAreSelected) {
-      const accountName = this.props.accounts.accounts[0].name;
+      let accountName = "";
+      try {
+        accountName = this.props.accounts.accounts[0].name;
+      }
+      catch (e) {
+        alert("This user has no accounts!");
+      }
       this.processedBankStatements.push([accountName]);
       const accountList = this.props.accounts.accounts.map(account => (
         <option value={account.name} key={account.id}>
@@ -159,6 +165,13 @@ class BankStatements extends Component {
       const descriptionIndex = cellsTypes.indexOf("Description");
       const sumIndex = cellsTypes.indexOf("Sum");
 
+      const bankStatementTypes = [
+        "Expense", "Income"
+      ].map(type => (
+          <option value={type} key={type}>
+            {type}
+          </option>));
+
       for (let i = 0; i < numberOfStatements; i++) {
         const bankStatement = bankStatements[i];
         const bankStatementValues = Object.values(bankStatement);
@@ -167,16 +180,20 @@ class BankStatements extends Component {
         processedBankStatement.push(bankStatementValues[categoryIndex]);
         processedBankStatement.push(bankStatementValues[descriptionIndex]);
         processedBankStatement.push(bankStatementValues[sumIndex]);
-        if (bankStatementValues.includes("K")) {
+        if (bankStatement["Transaction type"] === "K" || bankStatement["Tehingu tüüp"] === "K") {
           processedBankStatement.push("Expense");
-        } else {
+        }
+        else {
           processedBankStatement.push("Income");
         }
         processedBankStatements.push(processedBankStatement);
-        // if (value !== "Income" && value !== "Expense") {
-        let values = processedBankStatement
-          .filter(value => value !== "Income" && value !== "Expense")
-          .map(value => <td key={value}>{value}</td>);
+        let values = [];
+        for (let j = 0; j < processedBankStatement.length; j++) {
+          const value = processedBankStatement[j];
+          if (value !== "Income" && value !== "Expense") {
+            values.push(<td key={j + value}>{value}</td>)
+          }
+        }
         rows.push(
           <tr key={i}>
             {values}
@@ -184,13 +201,10 @@ class BankStatements extends Component {
               <select
                 id={i}
                 onChange={this.handleBankStatementTypeChange}
-                defaultValue={
-                  processedBankStatement[processedBankStatement.length - 1]
-                }
-                className="form-control"
+                defaultValue={processedBankStatement[processedBankStatement.length - 1]}
+                className={"form-control"}
               >
-                <option>Expense</option>
-                <option>Income</option>
+                {bankStatementTypes}
               </select>
             </td>
           </tr>
@@ -200,7 +214,7 @@ class BankStatements extends Component {
       return (
         <div>
           <AppNav />
-          <Table className="mt-4">
+          <Table className="mt-4" key="Bank statements">
             <thead>
               <tr>
                 <th>Bank statements</th>
@@ -270,7 +284,7 @@ class BankStatements extends Component {
     return (
       <div>
         <AppNav />
-        <Table className="mt-4">
+        <Table className="mt-4" key="Statement values">
           <thead>
             <tr>
               <th>Statement values</th>

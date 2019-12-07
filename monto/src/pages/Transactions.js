@@ -51,7 +51,7 @@ class TransactionView extends React.Component {
     };
     this.editCategories = this.editCategories.bind(this);
     this.editAccounts = this.editAccounts.bind(this);
-    this.generateBankStatements = this.generateBankStatements.bind(this);
+    this.generateCSVBankStatements = this.generateCSVBankStatements.bind(this);
   }
 
   editCategories() {
@@ -330,21 +330,24 @@ class TransactionView extends React.Component {
     let file = event.target.files[0];
     if (file.name.endsWith(".csv")) {
       Papa.parse(file, {
-        complete: this.generateBankStatements,
+        complete: this.generateCSVBankStatements,
         header: true
       });
     }
   };
 
-  generateBankStatements(result) {
+  generateCSVBankStatements(result) {
     let bankStatements = result.data;
-    if (bankStatements[0].Selgitus === "Algsaldo") {
+    if (bankStatements[0].Selgitus === "Algsaldo" || bankStatements[0].Details === "Opening balance") {
       bankStatements.shift();
     }
-    if (bankStatements[bankStatements.length - 1].Selgitus === "lõppsaldo") {
+    if (bankStatements[bankStatements.length - 1].Selgitus === "lõppsaldo" || bankStatements[bankStatements.length - 1].Details === "closing balance") {
       bankStatements.pop();
     }
-    if (bankStatements[bankStatements.length - 1].Selgitus === "Käive") {
+    if (bankStatements[bankStatements.length - 1].Selgitus === "Käive" || bankStatements[bankStatements.length - 1].Details === "Turnover") {
+      bankStatements.pop();
+    }
+    if (bankStatements[bankStatements.length - 1].Selgitus === "Käive" || bankStatements[bankStatements.length - 1].Details === "Turnover") {
       bankStatements.pop();
     }
     this.setState({ fileFormat: "CSV" });
