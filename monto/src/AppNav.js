@@ -1,6 +1,10 @@
 import React, { Component } from "react";
-import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from "reactstrap";
+import { Nav, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem } from "reactstrap";
 import { inject, observer } from "mobx-react";
+import image from "./images/user.png"
 
 class AppNav extends Component {
   state = {};
@@ -12,37 +16,49 @@ class AppNav extends Component {
           <NavbarBrand href="/">Monto</NavbarBrand>
           <Nav className="ml-auto" navbar>
             {this.props.auth.authenticated ? (
-              <>
-                <NavItem>
-                  <NavLink href="/dashboard">Dashboard</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/transactions">Transactions</NavLink>
-                </NavItem>
-                <NavItem>
+                <>
+                  <NavItem>
+                    <NavLink href="/dashboard">Dashboard</NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink href="/transactions">Transactions</NavLink>
+                  </NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                <img src={image}  height="25" width="25" alt="Options"/>
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>
+                  <NavLink href="/settings">
+                    Settings
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem>
                   <NavLink href="/" onClick={this.props.auth.logout}>
                     Logout
                   </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/settings">
-                    <img src={"/setting_pic.png"}  height="25" width="25" alt=" "/>
-                  </NavLink>
-                </NavItem>
-              </>
-            ) : (
-              <>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+                </>) : (
+                <>
                 <NavItem>
                   <NavLink href="/">Home</NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink href="/login">Log In</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/register">Sign Up</NavLink>
-                </NavItem>
-              </>
-            )}
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav caret>
+                      <img src={image}  height="25" width="25" alt="Options"/>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem>
+                        <NavLink href="/login">Log In</NavLink>
+                      </DropdownItem>
+                      <DropdownItem>
+                        <NavLink href="/register">Sign Up</NavLink>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </>)}
           </Nav>
         </Navbar>
       </div>
