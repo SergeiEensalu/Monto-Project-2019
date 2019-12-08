@@ -191,18 +191,18 @@ class TransactionView extends React.Component {
                       : "No category"}
                   </td>
                   <td>
-                    <Button
-                      size="sm"
-                      color="danger"
+                    <button
+                        className="delete-button"
                       onClick={() =>
                         this.props.transactions.delete(transaction)
                       }
                     >
                       Delete
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
+                        className="edit-button"
                       onClick={() => {
                         this.editableTransaction = transaction;
                         this.isEditing = true;
@@ -213,7 +213,7 @@ class TransactionView extends React.Component {
                       }}
                     >
                       Edit
-                    </Button>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -222,14 +222,13 @@ class TransactionView extends React.Component {
 
           <Modal
             isOpen={this.addingIncome !== undefined || this.isEditing}
-            toggle={this.hideModal}
             className={this.props.className}
           >
             <Form
               onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit}
               noValidate
             >
-              <ModalHeader toggle={this.hideModal}>
+              <ModalHeader>
                 {this.getHeader()}
               </ModalHeader>
 
@@ -355,8 +354,6 @@ class TransactionView extends React.Component {
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const bankStatements = XLSX.utils.sheet_to_json(ws);
-
-      console.log(bankStatements);
 
       if (Object.values(bankStatements[0])[0] === "") {
         bankStatements.shift();

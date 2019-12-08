@@ -91,6 +91,58 @@
 
 }
 
+.edit-button {
+    border: none;
+    font-size: 10px;
+    background: #696969;
+    color: #ffffff !important;
+    font-weight: 100;
+    padding: 10px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+}
+
+.edit-button:hover {
+    color: #404040 !important;
+    font-weight: 100 !important;
+    letter-spacing: 3px;
+    background: none;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.3s ease 0s;
+}
+
+.delete-button {
+    border: none;
+    font-size: 10px;
+    background: #dc3545;
+    color: #ffffff !important;
+    font-weight: 100;
+    padding: 10px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+}
+
+.delete-button:hover {
+    color: #404040 !important;
+    font-weight: 100 !important;
+    letter-spacing: 3px;
+    background: none;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.3s ease 0s;
+}
+
+
 .wrapper .button-icon:hover {
     background-position: 0 -100%;
+}
+
+.expense-button {
+    background-color: yellow;
+    color: yellow;
 }

@@ -21,7 +21,6 @@ class BankStatements extends Component {
 
   handleSelectedValueChange = event => {
     this.cellsTypes[event.target.id] = event.target.value;
-    console.log(this.cellsTypes);
   };
 
   handleBankStatementTypeChange = event => {
@@ -279,7 +278,6 @@ class BankStatements extends Component {
           );
         }
       }
-      console.log(cellsKeys);
       this.cellsTypes = cellsKeys;
     }
 
