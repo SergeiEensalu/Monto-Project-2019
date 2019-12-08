@@ -16,7 +16,7 @@ public final class Transaction {
     private Long id;
 
     @Column(nullable = false)
-    private Instant date;
+    private String date;
 
     @Column(nullable = false)
     private String description;

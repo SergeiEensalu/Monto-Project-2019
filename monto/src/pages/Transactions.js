@@ -4,6 +4,7 @@ import AppNav from "../AppNav";
 import "./Transactions.css";
 import { decorate, observable } from "mobx";
 import Papa from "papaparse";
+import XLSX from 'xlsx';
 import {
   Container,
   Form,
@@ -47,7 +48,7 @@ class TransactionView extends React.Component {
       accountEdit: false,
       fileUploading: false,
       bankStatements: [],
-      fileFormat: null
+      fileFormat: null,
     };
     this.editCategories = this.editCategories.bind(this);
     this.editAccounts = this.editAccounts.bind(this);
@@ -334,7 +335,56 @@ class TransactionView extends React.Component {
         header: true
       });
     }
+    if (file.name.endsWith(".xls")) {
+      this.generateXLSBankStatements(file);
+    }
   };
+
+  generateXLSBankStatements(file) {
+    const reader = new FileReader();
+    const rABS = !!reader.readAsBinaryString;
+    if (rABS) {
+      reader.readAsBinaryString(file);
+    } else {
+      reader.readAsArrayBuffer(file);
+    }
+
+    reader.onload = (e) => {
+      const bstr = e.target.result;
+      const wb = XLSX.read(bstr, {type: rABS ? 'binary' : 'array'});
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      const bankStatements = XLSX.utils.sheet_to_json(ws);
+
+      console.log(bankStatements);
+
+      if (Object.values(bankStatements[0])[0] === "") {
+        bankStatements.shift();
+      }
+      if (Object.values(bankStatements[0])[0].includes("Periood:") || Object.values(bankStatements[0])[0].includes("Period:")) {
+        bankStatements.shift();
+      }
+      if (Object.values(bankStatements[0])[0] === "") {
+        bankStatements.shift();
+      }
+      if (Object.values(bankStatements[0])[0].includes("algsaldo") || Object.values(bankStatements[0])[0].includes("opening balance")) {
+        bankStatements.shift();
+      }
+      if (Object.values(bankStatements[bankStatements.length - 1])[0].includes("Sissetulekud") || Object.values(bankStatements[bankStatements.length - 1])[0].includes("Credit turnover")) {
+        bankStatements.pop();
+      }
+      if (Object.values(bankStatements[bankStatements.length - 1])[0].includes("Väljaminekud") || Object.values(bankStatements[bankStatements.length - 1])[0].includes("Debit turnover")) {
+        bankStatements.pop();
+      }
+      if (Object.values(bankStatements[bankStatements.length - 1])[0].includes("lõppsaldo") || Object.values(bankStatements[bankStatements.length - 1])[0].includes("closing balance")) {
+        bankStatements.pop();
+      }
+      this.setState({ fileFormat: "XLS" });
+      this.setState({ bankStatements: bankStatements });
+      this.setState({ fileUploading: true });
+    }
+  }
+
 
   generateCSVBankStatements(result) {
     let bankStatements = result.data;

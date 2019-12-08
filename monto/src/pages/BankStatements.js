@@ -21,6 +21,7 @@ class BankStatements extends Component {
 
   handleSelectedValueChange = event => {
     this.cellsTypes[event.target.id] = event.target.value;
+    console.log(this.cellsTypes);
   };
 
   handleBankStatementTypeChange = event => {
@@ -180,7 +181,7 @@ class BankStatements extends Component {
         processedBankStatement.push(bankStatementValues[categoryIndex]);
         processedBankStatement.push(bankStatementValues[descriptionIndex]);
         processedBankStatement.push(bankStatementValues[sumIndex]);
-        if (bankStatement["Transaction type"] === "K" || bankStatement["Tehingu tüüp"] === "K") {
+        if (bankStatement["Transaction type"] === "K" || bankStatement["Tehingu tüüp"] === "K" || bankStatementValues[sumIndex] < 0) {
           processedBankStatement.push("Expense");
         }
         else {
@@ -275,6 +276,36 @@ class BankStatements extends Component {
                 </select>
               </td>
             </tr>
+          );
+        }
+      }
+      console.log(cellsKeys);
+      this.cellsTypes = cellsKeys;
+    }
+
+    if (this.props.fileFormat === "XLS") {
+      const bankStatement = this.props.bankStatements[0];
+      const cellsKeys = [];
+      const cellsValues = Object.values(bankStatement);
+      const numberOfCells = cellsValues.length;
+      for (let i = 0; i < numberOfCells; i++) {
+        cellsKeys.push("Type not specified");
+        const cellValue = cellsValues[i];
+        if (cellValue !== "") {
+          rows.push(
+              <tr key={i}>
+                <td>{cellValue}</td>
+                <td>
+                  <select
+                      id={i}
+                      onChange={this.handleSelectedValueChange}
+                      defaultValue="Type not specified"
+                      className="form-control"
+                  >
+                    {cellTypes}
+                  </select>
+                </td>
+              </tr>
           );
         }
       }

@@ -24,7 +24,7 @@ public class FileTransactions {
     public void saveCSVFileBankStatements(String[][] bankStatements, User user) {
         try {
             for (int i = 0; i < bankStatements.length - 1; i++) {
-                Date date = new SimpleDateFormat("dd.MM.yyyy").parse(bankStatements[i][0]);
+                String date = bankStatements[i][0];
                 String categoryName = bankStatements[i][1];
                 String description = bankStatements[i][2];
                 Double sum = Double.parseDouble(bankStatements[i][3].replace(",", "."));
@@ -40,7 +40,7 @@ public class FileTransactions {
         }
     }
 
-    private void saveBankStatement(Date date, String categoryName, String description, Double sum, User user, String accountName) {
+    private void saveBankStatement(String date, String categoryName, String description, Double sum, User user, String accountName) {
         Category category = null;
         List<Regrule> regrules = regruleRepository.findAllByUser(user);
         for (Regrule rule: regrules) {
@@ -53,7 +53,7 @@ public class FileTransactions {
         Account account = accountRepository.findByName(accountName);
 
         Transaction transaction = new Transaction();
-        transaction.setDate(date.toInstant());
+        transaction.setDate(date);
         transaction.setCategory(category);
         transaction.setDescription(description);
         transaction.setSum(sum);
