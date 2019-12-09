@@ -131,8 +131,8 @@ class BankStatements extends Component {
       return (
         <div>
           <AppNav />
-          <Container style={{alignItems: 'center', justifyContent: 'center'}}>
-            <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Choose account under which you want to save bank statements</h1>
+          <Container style={{width: 400, alignItems: 'center', justifyContent: 'center'}}>
+            <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial", fontSize: 30 }}>Choose account</h1>
           <Table className="mt-4">
             <thead>
               <tr>

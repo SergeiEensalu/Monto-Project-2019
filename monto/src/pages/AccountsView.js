@@ -100,8 +100,8 @@ class AccountsView extends Component {
         <div>
           <AppNav />
           <Container style={{width: 600, alignItems: 'center', justifyContent: 'center'}}>
+            <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial", fontSize: 30 }}>Add account</h1>
             <div>
-              <div>
                 <Button
                     color="success"
                     size="sm"
@@ -110,7 +110,6 @@ class AccountsView extends Component {
                 >
                   Add account
                 </Button>
-              </div>
             </div>
             <Table className="mt-4">
               <thead>
@@ -169,7 +168,7 @@ class AccountsView extends Component {
                 </ModalFooter>
               </Form>
             </Modal>
-            <div>
+            <div align={"center"}>
               <Button
                   color="success"
                   size="sm"
