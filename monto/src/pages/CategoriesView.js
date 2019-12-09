@@ -55,7 +55,7 @@ class CategoriesView extends Component {
 
     await this.props.categories.update(this.editableCategory);
     this.hideModal();
-  }
+  };
 
   handleChange = event => {
     this.values[event.target.name] = event.target.value;
@@ -89,16 +89,16 @@ class CategoriesView extends Component {
       <tr key={category.id}>
         <td>{category.name}</td>
         <td>
-          <Button
-            size="sm"
-            color="danger"
+          <button
+            className="delete-button"
             onClick={() => this.props.categories.delete(category)}
           >
             Delete
-          </Button>
+          </button>
         </td>
         <td>
-          <Button
+          <button
+              className="edit-button"
               size="sm"
               onClick={() => {
                 this.editableCategory = category;
@@ -107,17 +107,17 @@ class CategoriesView extends Component {
               }}
           >
             Edit
-          </Button>
+          </button>
         </td>
       </tr>
     ));
 
     return (
-      <div>
+      <div align={"center"}>
         <AppNav />
-        <Container style={{width: 400, alignItems: 'center', justifyContent: 'center'}}>
-          <div>
-            <div>
+        <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Add new categories</h1>
+        <Container style={{width: 400, alignItems: 'center', justifyContent: 'center', margin: 75}}>
+            <div style={{ display: "flex", float: "left" }}>
               <Button
                   color="success"
                   size="sm"
@@ -126,19 +126,20 @@ class CategoriesView extends Component {
               >
                 Add category
               </Button>
+              </div>
+              <div style={{ display: "flex" }}>
               <Button
+                  style={{ marginLeft: "auto", float: "right" }}
                   size="sm"
-                  color="danger"
                   onClick={() => this.editRegrules()}
               >
                 Edit rules
               </Button>
-            </div>
-          </div>
+              </div>
           <Table className="mt-4">
             <thead>
               <tr>
-                <th> Category</th>
+                <th>Category</th>
                 <th width="10%"></th>
                 <th width="10%"></th>
               </tr>
@@ -147,11 +148,10 @@ class CategoriesView extends Component {
           </Table>
           <Modal
               isOpen={this.addingCategory || this.isEditing}
-              toggle={this.hideModal}
               className={this.props.className}
           >
             <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
-              <ModalHeader toggle={this.hideModal}>
+              <ModalHeader>
                 {this.isEditing ? "Add new category" : "Edit the category"}
               </ModalHeader>
               <ModalBody>

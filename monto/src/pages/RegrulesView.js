@@ -90,17 +90,15 @@ class RegrulesView extends Component {
                     ? regrule.category.name
                     : "No category"}</td>
                 <td>
-                    <Button
-                        size="sm"
-                        color="danger"
+                    <button className="delete-button"
                         onClick={() => this.props.regrules.delete(regrule)}
                     >
                         Delete
-                    </Button>
+                    </button>
                 </td>
                 <td>
-                    <Button
-                        size="sm"
+                    <button
+                        className="edit-button"
                         onClick={() => {
                             this.editableRegrule = regrule;
                             this.isEditing = true;
@@ -109,15 +107,16 @@ class RegrulesView extends Component {
                         }}
                     >
                         Edit
-                    </Button>
+                    </button>
                 </td>
             </tr>
         ));
 
         return (
-            <div>
+            <div align={"center"}>
                 <AppNav />
-                <Container style={{width: 800, alignItems: 'center', justifyContent: 'center'}}>
+                <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Add new regular rules</h1>
+                <Container style={{width: 800, alignItems: 'center', justifyContent: 'center', margin: 75}}>
                     <div>
                         <div>
                             <Button
@@ -126,7 +125,7 @@ class RegrulesView extends Component {
                                 icon="plus"
                                 onClick={() => (this.addingRegrule = true)}
                             >
-                                Add regrule
+                                Add rule
                             </Button>
                         </div>
                     </div>
@@ -147,7 +146,7 @@ class RegrulesView extends Component {
                         className={this.props.className}
                     >
                         <Form onSubmit={this.isEditing ? this.handleUpdate : this.handleSubmit} noValidate>
-                            <ModalHeader toggle={this.hideModal}>
+                            <ModalHeader>
                                 {this.isEditing ? "Add new regrule" : "Edit the regrule"}
                             </ModalHeader>
                             <ModalBody>

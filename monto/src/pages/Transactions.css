@@ -94,7 +94,7 @@
 .edit-button {
     border: none;
     font-size: 10px;
-    background: #696969;
+    background: rgba(137, 134, 127, 0.51);
     color: #ffffff !important;
     font-weight: 100;
     padding: 10px;
@@ -117,7 +117,7 @@
 .delete-button {
     border: none;
     font-size: 10px;
-    background: #dc3545;
+    background: rgba(226, 45, 55, 0.5);
     color: #ffffff !important;
     font-weight: 100;
     padding: 10px;

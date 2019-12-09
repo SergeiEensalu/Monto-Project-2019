@@ -11,7 +11,7 @@ import {
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader, Table
 } from "reactstrap";
 import {inject, observer} from "mobx-react";
 
@@ -217,65 +217,72 @@ class UserSettingsPage extends React.Component {
 
         this.props.auth.setSessionEmail(this.state.new_username);
         this.hideModalChangeUsername();
-        alert("Username changed")
+        alert("Email changed")
     };
 
-
     render() {
+        let passwordRow = (
+            <tr key={"User settings"}>
+                <td>Password</td>
+                <td>
+                    <button
+                        className="edit-button"
+                        onClick={() => this.setState({changePassword: true})}
+                    >
+                        Change password
+                    </button>
+                </td>
+            </tr>);
+        let emailRow = (
+            <tr>
+                <td>Email</td>
+                <td>
+                    <button
+                        className="edit-button"
+                        onClick={() => this.setState({changeUsername: true})}
+                    >
+                        Change email
+                    </button>
+                </td>
+                </tr>
+            );
+        let userRow = (
+                <tr>
+                <td>User</td>
+                <td>
+                    <button
+                        className="edit-button"
+                        onClick={() => this.setState({deleteUser: true})}
+                    >
+                        Delete user
+                    </button>
+                </td>
+                </tr>
+        );
         return (
-            <>
-                <AppNav/>
-                <Container className="col-md-4 mt-5">
-                    <h1 className="wrapper"> User settings </h1>
-                    <div className="wrapper">
-                        <div>
-                            <h4>Password</h4>
-                        </div>
-                        <div>
-                            <Button
-                                size="sm"
-                                icon="plus"
-                                onClick={() => this.setState({changePassword: true})}
-                            >
-                                Change password
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="wrapper">
-                        <div>
-                            <h4>Email</h4>
-                        </div>
-                        <div>
-                            <Button
-                                size="sm"
-                                icon="plus"
-                                onClick={() => this.setState({changeUsername: true})}
-                            >
-                                Change email
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="wrapper">
-                        <div>
-                            <h4>User</h4>
-                        </div>
-                        <div>
-                            <Button
-                                size="sm"
-                                icon="plus"
-                                onClick={() => this.setState({deleteUser: true})}
-                            >
-                                Delete user
-                            </Button>
-                        </div>
-                    </div>
+            <div align={"center"}>
+                <AppNav />
+                <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Change user settings</h1>
+                <Container style={{width: 300, alignItems: 'center', justifyContent: 'center'}}>
+                    <Table className="mt-4">
+                        <thead>
+                            <tr>
+                                <th>User settings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {passwordRow}
+                        {emailRow}
+                        {userRow}
+                        </tbody>
+                    </Table>
                 </Container>
                 <Modal
                     isOpen={this.state.changePassword !== undefined}
                     toggle={this.hideModal}
                     className={this.props.className}
                 >
-                    <ModalHeader toggle={this.hideModal}>
+                    <ModalHeader>
                         Change password
                     </ModalHeader>
 
@@ -315,7 +322,19 @@ class UserSettingsPage extends React.Component {
                                 <FormText color="danger">{this.state.repeatedPasswordError2}</FormText>}
                             </FormGroup>
 
-                            <Button color="primary" block>Change password</Button>
+                            <ModalFooter>
+                                <Button color="primary" type="submit">
+                                    Save
+                                </Button>
+                                <Button
+                                    color="secondary"
+                                    onClick={() =>
+                                        this.hideModal()
+                                    }
+                                >
+                                    Cancel
+                                </Button>
+                            </ModalFooter>
 
                         </Form>
                     </ModalBody>
@@ -324,7 +343,7 @@ class UserSettingsPage extends React.Component {
                     isOpen={this.state.deleteUser === true}
                     className={this.props.className}
                 >
-                    <ModalHeader toggle={this.hideModalDeleteUser}>
+                    <ModalHeader>
                         Delete user
                     </ModalHeader>
 
@@ -335,7 +354,7 @@ class UserSettingsPage extends React.Component {
                             <FormText color="danger">It is impossible to recover your user</FormText>
 
                             <ModalFooter>
-                                <Button color="red" type="submit"> Delete user </Button>
+                                <Button color="primary" type="submit"> Delete user </Button>
                                 <Button color="secondary" onClick={() => this.hideModalDeleteUser()}>
                                     Cancel
                                 </Button>
@@ -349,7 +368,7 @@ class UserSettingsPage extends React.Component {
                     className={this.props.className}
                     toggle={this.hideModalChangeUsername}
                 >
-                    <ModalHeader toggle={this.hideModalChangeUsername}>
+                    <ModalHeader>
                         Change email address
                     </ModalHeader>
 
@@ -374,11 +393,16 @@ class UserSettingsPage extends React.Component {
                                        onChange={this.handleChange}
                                 />
                             </FormGroup>
-                            <Button color="primary" block>Change email address</Button>
+                            <ModalFooter>
+                                <Button color="primary">Change email address</Button>
+                                <Button color="secondary" onClick={() => this.hideModalChangeUsername()}>
+                                    Cancel
+                                </Button>
+                            </ModalFooter>
                         </Form>
                     </ModalBody>
                 </Modal>
-            </>
+            </div>
         );
     }
 }

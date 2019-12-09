@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AppNav from "../AppNav";
-import { Button, Table } from "reactstrap";
+import {Button, Container, Table} from "reactstrap";
 import { inject, observer } from "mobx-react";
 import { Client } from "../util/client";
 import Transactions from "./Transactions";
@@ -131,6 +131,8 @@ class BankStatements extends Component {
       return (
         <div>
           <AppNav />
+          <Container style={{alignItems: 'center', justifyContent: 'center'}}>
+            <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Choose account under which you want to save bank statements</h1>
           <Table className="mt-4">
             <thead>
               <tr>
@@ -149,6 +151,7 @@ class BankStatements extends Component {
               Save
             </Button>
           </div>
+          </Container>
         </div>
       );
     }
@@ -214,20 +217,25 @@ class BankStatements extends Component {
       return (
         <div>
           <AppNav />
+          <Container style={{alignItems: 'center', justifyContent: 'center'}}>
+            <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Choose type of bankstatement values</h1>
           <Table className="mt-4" key="Bank statements">
             <thead>
               <tr>
                 <th>Bank statements</th>
               </tr>
             </thead>
-            <tbody>{rows}</tbody>
+            <tbody>
+              {rows}
+            </tbody>
           </Table>
+          </Container>
           <div align={"center"}>
             <Button
-              color="success"
-              size="sm"
-              icon="plus"
-              onClick={this.controlSubmitBankStatements}
+                color="success"
+                size="sm"
+                icon="plus"
+                onClick={this.controlSubmitBankStatements}
             >
               Submit
             </Button>
@@ -313,6 +321,8 @@ class BankStatements extends Component {
     return (
       <div>
         <AppNav />
+        <Container style={{alignItems: 'center', justifyContent: 'center'}}>
+        <h1 style={{color: "#000000", margin: 75, fontFamily: "Arial"}}>Choose type of bankstatement values</h1>
         <Table className="mt-4" key="Statement values">
           <thead>
             <tr>
@@ -320,14 +330,17 @@ class BankStatements extends Component {
               <th>Value type</th>
             </tr>
           </thead>
-          <tbody>{rows}</tbody>
+          <tbody>
+            {rows}
+          </tbody>
         </Table>
+        </Container>
         <div align={"center"}>
           <Button
-            color="success"
-            size="sm"
-            icon="plus"
-            onClick={this.controlTypesSubmit}
+              color="success"
+              size="sm"
+              icon="plus"
+              onClick={this.controlTypesSubmit}
           >
             Submit
           </Button>

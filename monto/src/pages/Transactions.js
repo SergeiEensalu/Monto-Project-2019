@@ -256,13 +256,12 @@ class TransactionView extends React.Component {
                       </option>
                       {categoryList}
                     </select>
-                    <Button
-                      size="sm"
-                      color="danger"
+                    <button
+                        className="edit-button"
                       onClick={() => this.editCategories()}
                     >
                       Edit
-                    </Button>
+                    </button>
                   </div>
                 </FormGroup>
 
@@ -279,13 +278,12 @@ class TransactionView extends React.Component {
                       </option>
                       {accountList}
                     </select>
-                    <Button
-                      size="sm"
-                      color="danger"
+                    <button
+                        className="edit-button"
                       onClick={() => this.editAccounts()}
                     >
                       Edit
-                    </Button>
+                    </button>
                   </div>
                 </FormGroup>
 
