@@ -37,6 +37,7 @@ class AccountsView extends Component {
         this.values.name,
         this.values.type
     );
+    await this.componentDidMount();
     this.hideModal();
   };
 

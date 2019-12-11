@@ -45,6 +45,7 @@ class CategoriesView extends Component {
     await this.props.categories.add(
         this.values.name
     );
+    await this.componentDidMount();
     this.hideModal();
   };
 

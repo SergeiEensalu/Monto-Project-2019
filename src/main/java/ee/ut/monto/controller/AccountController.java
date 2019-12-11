@@ -34,8 +34,11 @@ public class AccountController {
 
     @PostMapping("/accounts")
     ResponseEntity<Account> createAccount(@Valid @RequestBody Account account, Authentication authentication) throws URISyntaxException {
-        account.setUser((User) authentication.getPrincipal());
-        Account savedAccount = accountRepository.save(account);
+        Account savedAccount = accountRepository.findByName(account.getName());
+        if (savedAccount == null) {
+            account.setUser((User) authentication.getPrincipal());
+            savedAccount = accountRepository.save(account);
+        }
         return ResponseEntity.created(new URI("/api/accounts" + savedAccount.getId())).body(savedAccount);
     }
 
